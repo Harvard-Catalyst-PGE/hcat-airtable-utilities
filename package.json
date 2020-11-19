@@ -1,0 +1,25 @@
+{
+  "name": "@hcat-pge/hcat-airtable-utilities",
+  "version": "0.1.0",
+  "description": "A collection of utilities for creating Airtable apps for HCat",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Harvard-Catalyst-PGE/hcat-airtable-utilities.git"
+  },
+  "keywords": [
+    "hcat",
+    "airtable",
+    "utilities",
+    "api"
+  ],
+  "author": "Matthew Thomas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Harvard-Catalyst-PGE/hcat-airtable-utilities/issues"
+  },
+  "homepage": "https://github.com/Harvard-Catalyst-PGE/hcat-airtable-utilities#readme"
+}
