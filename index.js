@@ -104,6 +104,18 @@ exports.HcatApi = class {
         return this.fetchWrapper(`/${baseType}/${baseId}/${table}`, options);
     }
 
+    async fetchRuntimes(payload) {
+        const options = {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        };
+
+        return this.fetchWrapper('/runtime', options);
+    }
+
     async generateHtml(payload) {
         const options = {
             method: "POST",
