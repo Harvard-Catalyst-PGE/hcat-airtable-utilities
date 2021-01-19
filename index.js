@@ -61,8 +61,17 @@ exports.HcatApi = class {
          }
     }
 
+    getQuery(baseType, query) {
+        if (baseType === "budget") {
+            return `?year=${query}`;
+        } else {
+            return `?tables[]=${query}`;
+        }
+    }
+
     async createRecords(apiKey, baseType, table, payload) {
         let baseId = this.getBaseId(baseType);
+        let query = this.getQuery(baseType, table);
 
         const options = {
             method: "POST",
@@ -73,11 +82,12 @@ exports.HcatApi = class {
             body: JSON.stringify(payload),
         };
 
-        return this.fetchWrapper(`/${baseType}/${baseId}/${table}`, options);
+        return this.fetchWrapper(`/${baseType}/${baseId}${query}`, options);
     }
 
     async fetchRecords(apiKey, baseType, table) {
         let baseId = this.getBaseId(baseType);
+        let query = this.getQuery(baseType, table);
 
         const options = {
             method: "GET",
@@ -86,11 +96,12 @@ exports.HcatApi = class {
             },
         };
 
-        return this.fetchWrapper(`/${baseType}/${baseId}/${table}`, options);
+        return this.fetchWrapper(`/${baseType}/${baseId}${query}`, options);
     }
 
     async updateRecords(apiKey, baseType, table, payload) {
-         let baseId = this.getBaseId(baseType);
+        let baseId = this.getBaseId(baseType);
+        let query = this.getQuery(baseType, table);
 
         const options = {
             method: "PATCH",
@@ -101,7 +112,7 @@ exports.HcatApi = class {
             body: JSON.stringify(payload),
         };
 
-        return this.fetchWrapper(`/${baseType}/${baseId}/${table}`, options);
+        return this.fetchWrapper(`/${baseType}/${baseId}${query}`, options);
     }
 
     async fetchRuntimes(payload) {
