@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/Harvard-Catalyst-PGE/hcat-airtable-utilities/issues"
   },
-  "homepage": "https://github.com/Harvard-Catalyst-PGE/hcat-airtable-utilities#readme"
+  "homepage": "https://github.com/Harvard-Catalyst-PGE/hcat-airtable-utilities#readme",
+  "dependencies": {
+    "@airtable/blocks": "^1.4.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  }
 }
