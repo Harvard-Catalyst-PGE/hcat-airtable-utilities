@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.3.0 - 2020-01-21
+* Add Airtable models that define base schema.
+* Restructure file organization
+
 # 0.2.0 - 2020-12-01
 * Add changelog.
 * Add endpoint to fetch video runtimes.
