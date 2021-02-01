@@ -1,6 +1,9 @@
 # Changelog
 
-# 0.3.0 - 2020-01-21
+# 0.3.2 - 2021-02-01
+* Add GET /d2l/orgstrucutre route support
+
+# 0.3.0 - 2021-01-21
 * Add Airtable models that define base schema.
 * Restructure file organization
 

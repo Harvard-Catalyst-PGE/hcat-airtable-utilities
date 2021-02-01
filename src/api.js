@@ -61,6 +61,18 @@ class HcatApi {
          }
     }
 
+    parseQueryParams(params) {
+        let queryString = "?";
+
+        for (const [key, value] of Object.entries(params)) {
+            if (value.value) {
+                queryString += `${key}=${value.value}&`;
+            }
+        }
+
+        return queryString;
+    }
+
     getQuery(baseType, query) {
         if (baseType === "budget") {
             return `?year=${query}`;
@@ -145,6 +157,22 @@ class HcatApi {
         };
 
         return this.fetchWrapper(`/generate/${type}`, options);
+    }
+
+    async getCourseListing({orgUnitId = null, queryParams = {}}) {
+        const options = {
+            method: "GET",
+        };
+
+        let ext;
+        
+        if (orgUnitId) {
+            ext = orgUnitId;
+        } else {
+            ext = this.parseQueryParams(queryParams);
+        }
+
+        return this.fetchWrapper(`/d2l/orgstructure/${ext}`, options);
     }
 };
 
