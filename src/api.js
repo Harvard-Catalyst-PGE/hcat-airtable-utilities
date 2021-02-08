@@ -37,7 +37,19 @@ class HcatApi {
      * @param {Object} options - options parameter for `fetch` call
      * @returns {Promise<Object>} - server response or error
      */
-     fetchWrapper(endpoint, options={}) {
+     fetchWrapper(endpoint, options={}, queryParams={}) {
+        // Optionally format query params
+        if (Object.keys(queryParams).length >= 0) {
+            endpoint += "?";
+            
+            for (const [key, value] of Object.entries(queryParams)) {
+            
+                if ((typeof value === "string" && value.length > 0) || value) {
+                    endpoint += `${key}=${value}&`;
+                }
+            }
+        }
+
         let url = this.server + endpoint;
 
         options['cors'] = true;
