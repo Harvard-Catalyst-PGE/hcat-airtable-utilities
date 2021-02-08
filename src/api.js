@@ -1,9 +1,18 @@
+const D2LApi = require('./d2l');
+const RuntimeApi = require('./runtime');
+const BaseApi = require('./base');
+const GenerateApi = require('./generate');
+
 class HcatApi {
     constructor(server, directory, budget, dictionary) {
         this._server = server;
         this._directory = directory;
         this._budget = budget;
         this._dictionary = dictionary;
+        this.d2l = new D2LApi(this);
+        this.runtime = new RuntimeApi(this);
+        this.base = new BaseApi(this);
+        this.generate = new GenerateApi(this);
     }
 
     get server() {
@@ -49,131 +58,20 @@ class HcatApi {
         });
     }
 
-    getBaseId(baseType) {
-         if (baseType === "budget") {
-             return this.budget;
-         } else if (baseType === "course") {
-             return this.dictionary;
-         } else if (baseType === "directory") {
-             return this.directory;
-         } else {
-             return null;
-         }
-    }
-
     parseQueryParams(params) {
         let queryString = "?";
-
+        
         for (const [key, value] of Object.entries(params)) {
-            if (value.value) {
-                queryString += `${key}=${value.value}&`;
+            if ((typeof value === "string" && value.length > 0) || value) {
+                queryString += `${key}=${value}&`;
             }
         }
+
+        console.log(queryString);
 
         return queryString;
     }
 
-    getQuery(baseType, query) {
-        if (baseType === "budget") {
-            return `?year=${query}`;
-        } else {
-            return `?tables[]=${query}`;
-        }
-    }
-
-    async createRecords(apiKey, baseType, table, payload) {
-        let baseId = this.getBaseId(baseType);
-        let query = this.getQuery(baseType, table);
-
-        const options = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey
-            },
-            body: JSON.stringify(payload),
-        };
-
-        return this.fetchWrapper(`/${baseType}/${baseId}${query}`, options);
-    }
-
-    async fetchRecords(apiKey, baseType, table) {
-        let baseId = this.getBaseId(baseType);
-        let query = this.getQuery(baseType, table);
-
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey,
-            },
-        };
-
-        return this.fetchWrapper(`/${baseType}/${baseId}${query}`, options);
-    }
-
-    async updateRecords(apiKey, baseType, table, payload) {
-        let baseId = this.getBaseId(baseType);
-        let query = this.getQuery(baseType, table);
-
-        const options = {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey
-            },
-            body: JSON.stringify(payload),
-        };
-
-        return this.fetchWrapper(`/${baseType}/${baseId}${query}`, options);
-    }
-
-    async fetchRuntimes(payload) {
-        const options = {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        };
-
-        return this.fetchWrapper('/runtime', options);
-    }
-
-    async generateHtml(payload) {
-        const options = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        };
-
-        return this.fetchWrapper('/generate', options);
-    }
-
-    async fetchGenerateTemplates(type) {
-        const options = {
-            method: "GET",
-        };
-
-        return this.fetchWrapper(`/generate/${type}`, options);
-    }
-
-    async getCourseListing({orgUnitId = null, queryParams = {}}) {
-        const options = {
-            method: "GET",
-        };
-
-        let ext;
-        
-        if (orgUnitId) {
-            ext = orgUnitId;
-        } else {
-            ext = this.parseQueryParams(queryParams);
-        }
-
-        return this.fetchWrapper(`/d2l/orgstructure/${ext}`, options);
-    }
 };
 
 module.exports = HcatApi;
