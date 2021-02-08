@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.4.0 - 2021-02-08
+* Restructure API to call separate routers (d2l, runtime, generate, base)
+* Initial expansion of query param support for all requests
+
 # 0.3.2 - 2021-02-01
 * Add GET /d2l/orgstrucutre route support
 
