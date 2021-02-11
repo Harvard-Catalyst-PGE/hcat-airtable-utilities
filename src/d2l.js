@@ -33,6 +33,67 @@ class D2LApi {
         return this.hcat.fetchWrapper(endpoint, options);
     }
 
+    /**
+     * Create Import course Copy Job.
+     * 
+     * @param {String} apiKey - LMS auth token.
+     * @param {String|number} sourceId - ID for the source course.
+     * @param {String|number} targetId - ID for the target course.
+     * @return {Object} - JobToken id to use for checking status of job.
+     */
+    async importCourse(apiKey, sourceId, targetId) {
+        // Construct endpoint with Target Course
+        let endpoint = `${this.endpoint}/${targetId}/import`;
+
+        // Construct payload with Source Course Id
+        const payload = {
+            "SourceOrgUnitId": sourceId,
+            "Components": null,
+            "CallbackUrl": null
+        }
+
+        const options = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+            },
+            body: JSON.stringify(payload),
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
+
+    /**
+     * Check copy job status.
+     * 
+     * Returns the current status of the given copy job for a Target course with
+     * Job ID. Endpoint meant to be polled until a non "PENDING" or "PROCESSING"
+     * status is returned.
+     * 
+     * It is the job of the caller to respect the API resources and restrict
+     * calls after a number of iterations/times.
+     * 
+     * @param {String} apiKey - LMS auth token.
+     * @param {String|number} targetId - ID for the target course.
+     * @param {String} jobId - The JobToken for the copy.
+     * @returns {String} The current status of the copy job.
+     */
+    async getImportCourseJobStatus(apiKey, targetId, jobId) {
+        let endpoint = `${this.endpoint}/${targetId}/import/${jobId}`;
+
+        const options = {
+            method: "GET",
+            headers: {
+                'x-api-key': apiKey
+            }
+        }
+
+        let response = await this.hcat.fetchWrapper(endpoint, options);
+        return response.Status;
+    }
+
+
     async getCourseListing({apiKey, orgUnitId=null, queryParams = {}}) {
         let endpoint = `/d2l/orgstructure/`;
         // let endpoint = `/d2l/orgstructure/${orgUnitId}/descendants/paged`;
