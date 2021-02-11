@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.4.1 - 2021-02-11
+* Add route to create a course copy job
+* Add route to check copy job status
+
 # 0.4.0 - 2021-02-08
 * Restructure API to call separate routers (d2l, runtime, generate, base)
 * Initial expansion of query param support for all requests
