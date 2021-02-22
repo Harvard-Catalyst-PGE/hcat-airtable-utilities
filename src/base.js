@@ -1,8 +1,23 @@
 'use strict';
 
 class BaseApi {
-    constructor(hcat) {
+    constructor(hcat, directory, budget, dictionary) {
         this.hcat = hcat;
+        this._directory = directory;
+        this._budget = budget;
+        this._dictionary = dictionary;
+    }
+    
+    get directory() {
+        return this._directory;
+    }
+
+    get budget() {
+        return this._budget;
+    }
+
+    get dictionary() {
+        return this._dictionary;
     }
 
     getQuery(baseType, query) {

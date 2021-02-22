@@ -1,5 +1,7 @@
 # Changelog
 
+# 0.4.2 - 2021-02-22
+* Fix pointers to Airtable base IDs; store in proper class.
 # 0.4.1 - 2021-02-11
 * Add route to create a course copy job
 * Add route to check copy job status
