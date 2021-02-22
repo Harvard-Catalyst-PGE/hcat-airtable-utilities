@@ -151,6 +151,19 @@ class D2LApi {
 
         return this.hcat.fetchWrapper(endpoint, options);
     }
+
+    async getTopicFile(apiKey, orgUnitId, topicId) {
+        let endpoint = `/d2l/${orgUnitId}/topics/${topicId}/file`;
+        
+        const options = {
+            method: "GET",
+            headers: {
+                'x-api-key': apiKey
+            }
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
 }
 
 module.exports = D2LApi;
