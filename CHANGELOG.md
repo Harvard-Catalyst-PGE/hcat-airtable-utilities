@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.4.3 - 2021-02-23
+* Fix query param bug that adds an extra '?' to the endpoint even when no query
+params are given.
+
 # 0.4.2 - 2021-02-22
 * Fix pointers to Airtable base IDs; store in proper class.
 * Add initial D2L route for fetching linked topic file.

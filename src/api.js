@@ -24,7 +24,7 @@ class HcatApi {
      */
      fetchWrapper(endpoint, options={}, queryParams={}) {
         // Optionally format query params
-        if (Object.keys(queryParams).length >= 0) {
+        if (Object.keys(queryParams).length > 0) {
             endpoint += "?";
             
             for (const [key, value] of Object.entries(queryParams)) {
