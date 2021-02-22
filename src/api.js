@@ -6,29 +6,14 @@ const GenerateApi = require('./generate');
 class HcatApi {
     constructor(server, directory, budget, dictionary) {
         this._server = server;
-        this._directory = directory;
-        this._budget = budget;
-        this._dictionary = dictionary;
         this.d2l = new D2LApi(this);
         this.runtime = new RuntimeApi(this);
-        this.base = new BaseApi(this);
+        this.base = new BaseApi(this, directory, budget, dictionary);
         this.generate = new GenerateApi(this);
     }
 
     get server() {
         return this._server;
-    }
-
-    get directory() {
-        return this._directory;
-    }
-
-    get budget() {
-        return this._budget;
-    }
-
-    get dictionary() {
-        return this._dictionary;
     }
 
     /**
