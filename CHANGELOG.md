@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.5.0 - 2021-03-01
+* Expand `fetchWrapper` to support different Content-Type headers
+  * Previously assumed response was always JSON; now accepts text and buffers
+
 # 0.4.3 - 2021-02-23
 * Fix query param bug that adds an extra '?' to the endpoint even when no query
 params are given.
