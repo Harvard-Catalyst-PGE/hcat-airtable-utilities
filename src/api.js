@@ -41,13 +41,30 @@ class HcatApi {
 
         return new Promise((resolve, reject) => {
             fetch(url, options)
-                .then(async (resp) => {
-                    if (! resp.ok) {
-                        return reject(resp);
+                .then(checkStatus)
+                .then(async (res) => {
+                    const contentType = res.headers.get("Content-Type");
+                    
+                    if(!contentType) {
+                        // No ontent type specified; just return
+                        return resolve(res);
+                    } else if (contentType.indexOf("application/json") !== -1) {
+                        // Response is JSON, parse and return
+                        const json = await res.json();
+                        return resolve(json);
+                    } else if (contentType.startsWith("text/")) {
+                        // Response is text-like, parse and return
+                        const text = await res.text();
+                        return resolve(text);
+                    } else if (contentType.indexOf("application/octet-stream") !== -1) {
+                        // Response is a buffer; load data and return Reader
+                        let reader = res.body.getReader();
+                        return resolve(reader);
+                    } else {
+                        // Unknown content-type case; reject with message
+                        console.error("UNKNOWN RESPONSE");
+                        return reject(res);
                     }
-
-                    const data = await resp.json();
-                    return resolve(data);
                 })
                 .catch(err => {
                     return reject(err);
@@ -70,5 +87,16 @@ class HcatApi {
     }
 
 };
+
+function checkStatus(res) {
+    if (res.ok) {
+        return res;
+    } else {
+        throw {
+            status: res.status,
+            statusText: res.statusText,
+        };
+    }
+}
 
 module.exports = HcatApi;
