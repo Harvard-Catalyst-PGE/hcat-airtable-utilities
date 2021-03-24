@@ -9,7 +9,7 @@ module.exports = {
             "name": "Dictionary Entry",
             "type": FieldType.FORMULA,
             "options": {
-                "formula": `CONCATENATE(LEFT(Phase, 1), '.', LEFT({Sub Phase}, 1), '.', LEFT(Task, 1), ':', RIGHT(Task, LEN(Task) - 2))`,
+                "formula": `CONCATENATE(LEFT(Phase, 1), '.', LEFT({Sub Phase}, FIND(".", {Sub Phase}) - 1), '.', LEFT(Task, 1), ':', RIGHT(Task, LEN(Task) - 2))`,
             }
         },
         {
@@ -33,10 +33,16 @@ module.exports = {
                         "name": "5. Rollout",
                     },
                     {
-                        "name": "6. Evaluation and Revision",
+                        "name": "6. During Course",
                     },
                     {
-                        "name": "7. Project Closing",
+                        "name": "7. Evaluation and Revision",
+                    },
+                    {
+                        "name": "8. Project Closing",
+                    },
+                    {
+                        "name": "9. CME",
                     }
                 ]
             }
@@ -129,6 +135,22 @@ module.exports = {
         },
         {
             "name": "Description of Task (Work required)",
+            "type": FieldType.RICH_TEXT,
+        },
+        {
+            "name": "Description of Task (Coordinator)",
+            "type": FieldType.RICH_TEXT,
+        },
+        {
+            "name": "Description of Task (Media Producer)",
+            "type": FieldType.RICH_TEXT,
+        },
+        {
+            "name": "Description of Task (Designer)",
+            "type": FieldType.RICH_TEXT,
+        },
+        {
+            "name": "Description of Task (Marketing)",
             "type": FieldType.RICH_TEXT,
         },
         {
