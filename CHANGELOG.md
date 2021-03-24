@@ -1,5 +1,13 @@
 # Changelog
 
+# 0.5.1 - 2021-03-24
+* Add initial support for JSON errors during fetch requests.
+* Update Dictionary model with new fields/modified formulas
+* Add user-related API endpoints for D2L functions.
+  * Fetch/create user
+  * Create/delete user enrollment
+  * Update user password
+
 # 0.5.0 - 2021-03-01
 * Expand `fetchWrapper` to support different Content-Type headers
   * Previously assumed response was always JSON; now accepts text and buffers

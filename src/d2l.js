@@ -1,5 +1,27 @@
 'use strict';
 
+/**
+ * HCat API - D2L endpoints
+ * 
+ * Supported endpoints:
+ *      Course:
+ *          - createCourse()
+ *          - getCourse()
+ *          - importCourse()
+ *          - getImportCourseJobStatus()
+ *          - getCourseListing()
+ *      Users:
+ *          - getEnrollments()
+ *          - getRoles()
+ *          - createUser()
+ *          - fetchUser()
+ *          - createUserEnrollment()
+ *          - deleteUserEnrollment()
+ *      Content:
+ *          - getTOC()
+ *          - getTopicFile()
+ */
+
 class D2LApi {
     constructor(hcat) {
         this.endpoint = "/d2l";
@@ -146,6 +168,82 @@ class D2LApi {
             method: "GET",
             headers: {
                 'x-api-key': apiKey
+            }
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
+
+    async createUser(apiKey, payload) {
+        console.log("UTILITY CREATE USER");
+        let endpoint = `/d2l/users`;
+
+        const options = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+            },
+            body: JSON.stringify(payload)
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
+
+    async fetchUser(apiKey, queryParams) {
+        let endpoint = `/d2l/users`;
+
+        const options = {
+            method: "GET",
+            headers: {
+                'x-api-key': apiKey
+            }
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options, queryParams);
+    }
+
+    async updateUserPassword(apiKey, userId, password) {
+        let endpoint = `/d2l/users/${userId}/password`;
+
+        const options = {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+            },
+            body: JSON.stringify({"Password": password})
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
+
+    async createUserEnrollment(apiKey, orgUnitId, userId, roleId) {
+        let endpoint = `/d2l/${orgUnitId}/enroll/${userId}`;
+
+        const payload = {
+            "RoleId": roleId,
+        }
+
+        const options = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+            },
+            body: JSON.stringify(payload)
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
+
+    async deleteUserEnrollment(apiKey, orgUnitId, userId) {
+        let endpoint = `/d2l/${orgUnitId}/enroll/${userId}`;
+
+        const options = {
+            method: "DELETE",
+            headers: {
+                'x-api-key': apiKey,
             }
         }
 
