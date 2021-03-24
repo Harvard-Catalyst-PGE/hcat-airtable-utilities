@@ -41,7 +41,9 @@ class HcatApi {
 
         return new Promise((resolve, reject) => {
             fetch(url, options)
-                .then(checkStatus)
+                .then(async (res) => {
+                    return await checkStatus(res);
+                })
                 .then(async (res) => {
                     const contentType = res.headers.get("Content-Type");
                     
@@ -88,13 +90,27 @@ class HcatApi {
 
 };
 
-function checkStatus(res) {
+async function checkStatus(res) {
     if (res.ok) {
         return res;
     } else {
+        let message = res.statusText;
+
+        try {
+            let json = await res.json();
+            
+            if (json.Errors) {
+                message = json.Errors.map((error) => {
+                    return error.Message;
+                });
+            }
+        } catch (e) {
+            // Error is not JSON-formatted; do not handle
+        }
+        
         throw {
             status: res.status,
-            statusText: res.statusText,
+            statusText: message,
         };
     }
 }

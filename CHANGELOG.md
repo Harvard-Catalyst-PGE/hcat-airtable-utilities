@@ -1,5 +1,8 @@
 # Changelog
 
+# 0.5.1 - 2021-03-24
+* Add initial support for JSON errors during fetch requests.
+
 # 0.5.0 - 2021-03-01
 * Expand `fetchWrapper` to support different Content-Type headers
   * Previously assumed response was always JSON; now accepts text and buffers
