@@ -2,6 +2,9 @@
 
 # 0.5.2 - 2021-05-17
 * Add POST support for creating individual D2L content objects
+* Separate POST support for `/generate` routes to support individual pages
+  and an entire course payload.
+
 # 0.5.1 - 2021-03-24
 * Add initial support for JSON errors during fetch requests.
 * Update Dictionary model with new fields/modified formulas
