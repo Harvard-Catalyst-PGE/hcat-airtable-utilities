@@ -2,12 +2,25 @@
 
 class GenerateApi {
     constructor(hcat) {
-        this.endpoint = "/generate";
         this.hcat = hcat;
     }
 
-    async generateHtml(payload) {
-        let endpoint = this.endpoint;
+    async generateCourse(payload) {
+        let endpoint = "/generate/course";
+
+        const options = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        };
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
+
+    async generatePage(payload) {
+        let endpoint = "/generate";
 
         const options = {
             method: "POST",

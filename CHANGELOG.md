@@ -1,5 +1,10 @@
 # Changelog
 
+# 0.5.2 - 2021-05-17
+* Add POST support for creating individual D2L content objects
+* Separate POST support for `/generate` routes to support individual pages
+  and an entire course payload.
+
 # 0.5.1 - 2021-03-24
 * Add initial support for JSON errors during fetch requests.
 * Update Dictionary model with new fields/modified formulas
@@ -29,7 +34,7 @@ params are given.
 * Initial expansion of query param support for all requests
 
 # 0.3.2 - 2021-02-01
-* Add GET /d2l/orgstrucutre route support
+* Add GET /d2l/orgstructure route support
 
 # 0.3.0 - 2021-01-21
 * Add Airtable models that define base schema.
