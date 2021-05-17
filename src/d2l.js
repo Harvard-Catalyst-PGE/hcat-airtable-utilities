@@ -20,6 +20,8 @@
  *      Content:
  *          - getTOC()
  *          - getTopicFile()
+ *          - createRootContent()
+ *          - createChildContent()
  */
 
 class D2LApi {
@@ -258,6 +260,26 @@ class D2LApi {
             headers: {
                 'x-api-key': apiKey
             }
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
+
+    async createContent(apiKey, payload, orgUnitId, contentType, moduleId = null) {
+        let endpoint = `/d2l/${orgUnitId}/${contentType}`;
+
+        if (moduleId) {
+            endpoint += `/${moduleId}`;
+        }
+
+        console.log(`Creating ${endpoint}`);
+        const options = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+            },
+            body: JSON.stringify(payload)
         }
 
         return this.hcat.fetchWrapper(endpoint, options);
