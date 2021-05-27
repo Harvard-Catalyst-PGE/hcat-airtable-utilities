@@ -2,14 +2,14 @@ const FieldType = require('@airtable/blocks/models').FieldType;
 const colors = require('@airtable/blocks/ui').colors;
 
 module.exports = {
-    "name": "Dictionary (copy)",
-    "apiName": "Dictionary",
+    "name": "Workplan",
+    "apiName": "Workplan",
     "required": [
         {
             "name": "Dictionary Entry",
             "type": FieldType.FORMULA,
             "options": {
-                "formula": `CONCATENATE(LEFT(Phase, 1), '.', LEFT({Sub Phase}, FIND(".", {Sub Phase}) - 1), '.', LEFT(Task, 1), ':', RIGHT(Task, LEN(Task) - 2))`,
+                "formula": `CONCATENATE(LEFT(Phase, 1), '.', IF({Sub Phase}, CONCATENATE(LEFT({Sub Phase}, FIND(".", {Sub Phase}) - 1), '.'), ""), LEFT({Task}, FIND(".", {Task}) - 1), ':', RIGHT({Task}, LEN({Task}) - FIND(".", {Task})))`,
             }
         },
         {
@@ -24,32 +24,42 @@ module.exports = {
                         "name": "2. Preparation",
                     },
                     {
-                        "name": "3. Iterative Design",
+                        "name": "3. Iterative Design (Content)",
                     },
                     {
-                        "name": "4. Iterative Development",
+                        "name": "4. Iterative Development (Course Materials)",
                     },
                     {
-                        "name": "5. Rollout",
+                        "name": "5. Pre-course (Rollout)",
                     },
                     {
                         "name": "6. During Course",
                     },
                     {
-                        "name": "7. Evaluation and Revision",
+                        "name": "7. Post-course/Evaluation",
                     },
                     {
                         "name": "8. Project Closing",
                     },
-                    {
-                        "name": "9. CME",
-                    }
                 ]
             }
         },
         {
             "name": "Sub Phase",
-            "type": FieldType.SINGLE_LINE_TEXT,
+            "type": FieldType.SINGLE_SELECT,
+            "options": {
+                "choices": [
+                    {
+                        "name": "1. Preparation",
+                    },
+                    {
+                        "name": "2. Execution",
+                    },
+                    {
+                        "name": "3. Next Steps",
+                    }
+                ]
+            }
         },
         {
             "name": "Task",
@@ -61,27 +71,20 @@ module.exports = {
             "options": {
                 "choices": [
                     {
-                        "name": "Project Manager",
-                    },
-                    {
                         "name": "eLearning Course Designer",
                     },
                     {
                         "name": "Coordinator",
                     },
                     {
-                        "name": "eLearning Instructional Designer",
+                        "name": "Media Producer",
                     },
                     {
-                        "name": "Media Producer",
-                    }
+                        "name": "Marketing Coordinator",
+                    },
                 ]
             }
         },
-        // {
-        //     "name": "Template creation status",
-        //     "type": FieldType.SINGLE_SELECT,
-        // },
         {
             "name": "Est. Effort",
             "type": FieldType.NUMBER,
@@ -95,16 +98,22 @@ module.exports = {
             "options": {
                 "choices": [
                     {
-                        "name": "Project Sponsor"
+                        "name": "eLearning Course Designer"
                     },
                     {
                         "name": "Coordinator"
                     },
                     {
-                        "name": "Project Team"
+                        "name": "Media Producer"
                     },
                     {
-                        "name": "Project Stakeholders"
+                        "name": "Marketing Coordinator",
+                    },
+                    {
+                        "name": "Associate Director"
+                    },
+                    {
+                        "name": "Project Team"
                     },
                     {
                         "name": "Committee Members"
@@ -113,19 +122,10 @@ module.exports = {
                         "name": "Presenters"
                     },
                     {
-                        "name": "Media Producer"
-                    },
-                    {
                         "name": "Curriculum Specialist"
                     },
                     {
-                        "name": "Faculty Committee Members"
-                    },
-                    {
                         "name": "CME Coordinator"
-                    },
-                    {
-                        "name": "eLearning Course Designer"
                     },
                     {
                         "name": "Programmer"
@@ -134,23 +134,23 @@ module.exports = {
             }
         },
         {
-            "name": "Description of Task (Work required)",
+            "name": "Other Tasks",
             "type": FieldType.RICH_TEXT,
         },
         {
-            "name": "Description of Task (Coordinator)",
+            "name": "Coordinator Tasks",
             "type": FieldType.RICH_TEXT,
         },
         {
-            "name": "Description of Task (Media Producer)",
+            "name": "Media Producer Tasks",
             "type": FieldType.RICH_TEXT,
         },
         {
-            "name": "Description of Task (Designer)",
+            "name": "Designer Tasks",
             "type": FieldType.RICH_TEXT,
         },
         {
-            "name": "Description of Task (Marketing)",
+            "name": "Marketing Tasks",
             "type": FieldType.RICH_TEXT,
         },
         {
@@ -158,19 +158,11 @@ module.exports = {
             "type": FieldType.MULTIPLE_RECORD_LINKS,
         },
         {
-            "name": "Outputs",
-            "type": FieldType.MULTIPLE_RECORD_LINKS,
-        },
-        {
             "name": "Task Dependencies",
             "type": FieldType.MULTIPLE_RECORD_LINKS,
         },
         {
-            "name": "Risks",
-            "type": FieldType.SINGLE_LINE_TEXT,
-        },
-        {
-            "name": "Registers",
+            "name": "Register",
             "type": FieldType.MULTIPLE_RECORD_LINKS,
         },
         {
@@ -197,15 +189,15 @@ module.exports = {
             "options": {
                 "choices": [
                     {
-                        "name": "Open",
+                        "name": "Blocked",
                         "color": colors.RED_BRIGHT,
                     },
                     {
-                        "name": "In Progress",
+                        "name": "Not Started Yet",
                         "color": colors.ORANGE_BRIGHT,
                     },
                     {
-                        "name": "Blocked",
+                        "name": "In Progress",
                         "color": colors.YELLOW_BRIGHT,
                     },
                     {
@@ -213,24 +205,8 @@ module.exports = {
                         "color": colors.GREEN_BRIGHT,
                     },
                     {
-                        "name": "Completed (Late)",
-                        "color": colors.GREEN_LIGHT_1,
-                    },
-                    {
-                        "name": "Cancelled",
+                        "name": "N/A",
                         "color": colors.GRAY_LIGHT_1,
-                    },
-                    {
-                        "name": "Delayed",
-                        "color": colors.GRAY_LIGHT_1,
-                    },
-                    {
-                        "name": "Deferred",
-                        "color": colors.GRAY_LIGHT_1,
-                    },
-                    {
-                        "name": "Omitted",
-                        "color": colors.GRAY_BRIGHT,
                     },
                 ]
             }

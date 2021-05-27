@@ -8,7 +8,14 @@ module.exports = {
             "type": FieldType.SINGLE_LINE_TEXT,
         },
         {
-            "name": "Unit",
+            "name": "Id",
+            "type": FieldType.NUMBER,
+            "options": {
+                "precision": 0,
+            }
+        },
+        {
+            "name": "Module",
             "type": FieldType.SINGLE_SELECT,
             "options": {
                 "choices": []
@@ -35,15 +42,43 @@ module.exports = {
             "options": {
                 "choices": [
                     {
-                        "name": "Course Conclusion",
-                        "color": colors.GREEN_LIGHT_1,
+                        "name": "Module",
+                        "color": colors.YELLOW_BRIGHT,
+                    },
+                    {
+                        "name": "Sub Module",
+                        "color": colors.PINK_BRIGHT,
                     },
                     {
                         "name": "Course Overview",
                         "color": colors.PINK_LIGHT_1,
                     },
                     {
+                        "name": "Meet the Presenter",
+                        "color": colors.BLUE_BRIGHT,
+                    },
+                    {
+                        "name": "Syllabus",
+                        "color": colors.BLUE_BRIGHT,
+                    },
+                    {
+                        "name": "Password Change",
+                        "color": colors.BLUE_BRIGHT,
+                    },
+                    {
+                        "name": "Video",
+                        "color": colors.ORANGE_BRIGHT,
+                    },
+                    {
+                        "name": "Course Conclusion",
+                        "color": colors.GREEN_LIGHT_1,
+                    },
+                    {
                         "name": "Discussion Board",
+                        "color": colors.ORANGE_LIGHT_1,
+                    },
+                    {
+                        "name": "Discussion Topic",
                         "color": colors.ORANGE_LIGHT_1,
                     },
                     {
@@ -51,38 +86,22 @@ module.exports = {
                         "color": colors.BLUE_BRIGHT,
                     },
                     {
-                        "name": "Feedback",
+                        "name": "Link",
                         "color": colors.PURPLE_BRIGHT,
                     },
                     {
-                        "name": "Meet the Course Director",
-                        "color": colors.BLUE_BRIGHT,
-                    },
-                    {
-                        "name": "Module",
-                        "color": colors.YELLOW_BRIGHT,
-                    },
-                    {
-                        "name": "PDF",
+                        "name": "File",
                         "color": colors.CYAN_BRIGHT,
                     },
                     {
                         "name": "Quiz",
                         "color": colors.GREEN_BRIGHT,
-                    },
-                    {
-                        "name": "Sub Module",
-                        "color": colors.PINK_BRIGHT,
-                    },
-                    {
-                        "name": "Video",
-                        "color": colors.ORANGE_BRIGHT,
-                    },
+                    },   
                 ]
             }
         },
         {
-            "name": "Notes",
+            "name": "Module Description",
             "type": FieldType.RICH_TEXT,
         },
         {
@@ -92,11 +111,29 @@ module.exports = {
         {
             "name": "Attachment",
             "type": FieldType.MULTIPLE_ATTACHMENTS,
-        }
+        },
+        {
+            "name": "Start Date",
+            "type": FieldType.DATE,
+            "options": {
+                "dateFormat": {
+                    "name": "iso"
+                }
+            }
+        },
+        {
+            "name": "End Date",
+            "type": FieldType.DATE,
+            "options": {
+                "dateFormat": {
+                    "name": "iso"
+                }
+            }
+        },
     ],
     "optional": [
         {
-            "name": "Instructors",
+            "name": "Presenters",
             "type": FieldType.MULTIPLE_RECORD_LINKS,
         },
     ]

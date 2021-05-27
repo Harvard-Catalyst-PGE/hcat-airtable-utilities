@@ -7,9 +7,13 @@
 
 module.exports = {
     BUDGET_MODEL: require('./BudgetModel'),
+    COURSE_DATES_MODEL: require('./CourseDates'),
     COURSE_RESOURCES_MODEL: require('./CourseResourcesModel'),
     COURSE_STRUCTURE_MODEL: require('./CourseStructureModel'),
-    DICTIONARY_MODEL: require('./DictionaryModel'),
-    INSTRUCTOR_MODEL: require('./InstructorModel'),
+    PRESENTER_MODEL: require('./PresenterModel'),
+    PRESENTER_COLLECTION_MODEL: require('./PresenterCollectionModel'),
+    REGISTER_MODEL: require('./RegisterModel'),
+    TEAM_CHECKIN_MODEL: require('./TeamCheckinModel'),
     VIDEO_MODEL: require('./VideoModel'),
+    WORKPLAN_MODEL: require('./WorkplanModel'),
 }

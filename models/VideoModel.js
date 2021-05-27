@@ -8,7 +8,7 @@ module.exports = {
             "type": FieldType.SINGLE_LINE_TEXT,
         },
         {
-            "name": "Unit",
+            "name": "Module",
             "type": FieldType.NUMBER,
             "options": {
                 "precision": 0,
@@ -29,7 +29,7 @@ module.exports = {
             }
         },
         {
-            "name": "Instructor",
+            "name": "Presenter",
             "type": FieldType.MULTIPLE_RECORD_LINKS,
         },
         {
@@ -109,6 +109,10 @@ module.exports = {
             "type": FieldType.RICH_TEXT,
         },
         {
+            "name": "Additional Resources",
+            "type": FieldType.RICH_TEXT,
+        },
+        {
             "name": "Version; date",
             "type": FieldType.SINGLE_LINE_TEXT,
         },
@@ -126,9 +130,28 @@ module.exports = {
         {
             "name": "Vimeo Link",
             "type": FieldType.FORMULA,
+            "options": {
+                "formula": `IF({Vimeo Review Link}="", "", "https://vimeo.com/manage/videos/"&MID({Vimeo Review Link}, 42, 9))`,
+            }
+        },
+        {
+            "name": "Accessibility Review",
+            "type": FieldType.CHECKBOX,
+            "options": {
+                "icon": "check",
+                "color": "greenBright",
+            }
         },
         {
             "name": "Captions",
+            "type": FieldType.CHECKBOX,
+            "options": {
+                "icon": "check",
+                "color": "greenBright",
+            }
+        },
+        {
+            "name": "Caption Review",
             "type": FieldType.CHECKBOX,
             "options": {
                 "icon": "check",
