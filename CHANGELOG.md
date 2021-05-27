@@ -1,5 +1,8 @@
 # Changelog
 
+# 0.6.0 - 2021-05-27
+* Update Airtable models to reflect changes to Workplan
+
 # 0.5.2 - 2021-05-17
 * Add POST support for creating individual D2L content objects
 * Separate POST support for `/generate` routes to support individual pages
