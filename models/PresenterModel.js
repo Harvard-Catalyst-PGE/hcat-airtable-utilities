@@ -2,8 +2,8 @@ const FieldType = require('@airtable/blocks/models').FieldType;
 const colors = require('@airtable/blocks/ui').colors;
 
 module.exports = {
-    "name": "Instructor (copy)",
-    "apiName": "instructors",
+    "name": "Presenters",
+    "apiName": "presenters",
     "required": [
         {
             "name": "Name",
