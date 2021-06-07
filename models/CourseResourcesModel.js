@@ -1,7 +1,7 @@
 const FieldType = require('@airtable/blocks/models').FieldType;
 
 module.exports = {
-    "name": "Course Resources (copy)",
+    "name": "Course Resources",
     "apiName": "Course Resources",
     "required": [
         {
@@ -19,6 +19,9 @@ module.exports = {
         {
             "name": "Inputs",
             "type": FieldType.MULTIPLE_RECORD_LINKS,
+            "options": {
+                "linkedTableId": "Workplan table"
+            }
         },
     ]
 };

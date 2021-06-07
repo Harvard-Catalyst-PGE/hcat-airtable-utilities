@@ -60,6 +60,9 @@ module.exports = {
         {
             "name": "Associated Task",
             "type": FieldType.MULTIPLE_RECORD_LINKS,
+            "options": {
+                "linkedTableId": "Workplan Table"
+            }
         },
     ]
 };

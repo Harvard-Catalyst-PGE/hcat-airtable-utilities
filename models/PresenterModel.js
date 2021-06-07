@@ -188,11 +188,17 @@ module.exports = {
         },
         {
             "name": "Videos",
-            "type": FieldType.MULTIPLE_RECORD_LINKS
+            "type": FieldType.MULTIPLE_RECORD_LINKS,
+            "options": {
+                "linkedTableId": "Videos Table"
+            }
         },
         {
             "name": "Course Structure",
-            "type": FieldType.MULTIPLE_RECORD_LINKS
+            "type": FieldType.MULTIPLE_RECORD_LINKS,
+            "options": {
+                "linkedTableId": "Course Structure Table"
+            }
         },
         {
             "name": "Onboarding Meeting",
