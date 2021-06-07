@@ -7,6 +7,11 @@ module.exports = {
         {
             "name": "Meeting",
             "type": FieldType.DATE,
+            "options": {
+                "dateFormat": {
+                    "name": "iso"
+                }
+            }
         },
         {
             "name": "Agenda",

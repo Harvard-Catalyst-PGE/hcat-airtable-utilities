@@ -56,6 +56,11 @@ module.exports = {
         {
             "name": "Date Due",
             "type": FieldType.DATE,
+            "options": {
+                "dateFormat": {
+                    "name": "iso"
+                }
+            }
         },
         {
             "name": "Associated Task",
