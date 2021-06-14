@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.6.5 - 2021-06-14
+* Add new `createDiscussionTopic` method to support more content types
+* Fix: v0.6.1-0.6.4 included minor bug fixes for Model names, colors, and more
+
 # 0.6.0 - 2021-05-27
 * Update Airtable models to reflect changes to Workplan
 
