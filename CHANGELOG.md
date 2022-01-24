@@ -3,6 +3,7 @@
 # 0.6.6 - 2022-01-24
 * Update packages
 * Update GitHub workflow for new Node version
+* Add LMS constants to reduce duplicate code
 
 # 0.6.5 - 2021-06-14
 * Add new `createDiscussionTopic` method to support more content types
