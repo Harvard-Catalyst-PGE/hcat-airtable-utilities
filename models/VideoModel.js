@@ -2,6 +2,7 @@ const FieldType = require('@airtable/blocks/models').FieldType;
 const colors = require('@airtable/blocks/ui').colors;
 
 module.exports = {
+    "name": "Videos",
     "required": [
         {
             "name": "Name",
@@ -31,6 +32,9 @@ module.exports = {
         {
             "name": "Presenter",
             "type": FieldType.MULTIPLE_RECORD_LINKS,
+            "options": {
+                "linkedTableId": "Presenter Table"
+            }
         },
         {
             "name": "Filming Date",
@@ -161,6 +165,9 @@ module.exports = {
         {
             "name": "Course Structure",
             "type": FieldType.MULTIPLE_RECORD_LINKS,
+            "options": {
+                "linkedTableId": "Course Structure Table"
+            }
         },
     ]
 };

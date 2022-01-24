@@ -284,6 +284,23 @@ class D2LApi {
 
         return this.hcat.fetchWrapper(endpoint, options);
     }
+
+    async createDiscussionTopic(apiKey, payload, orgUnitId, forumId) {
+        let endpoint = `/d2l/${orgUnitId}/discussions/${forumId}/topics`;
+
+        console.log(`Creating ${endpoint}`);
+
+        const options = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+            },
+            body: JSON.stringify(payload)
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
 }
 
 module.exports = D2LApi;

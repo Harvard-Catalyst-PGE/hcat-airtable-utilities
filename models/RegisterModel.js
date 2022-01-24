@@ -1,4 +1,5 @@
 const FieldType = require('@airtable/blocks/models').FieldType;
+const colors = require('@airtable/blocks/ui').colors;
 
 module.exports = {
     "name": "Register",
@@ -55,10 +56,18 @@ module.exports = {
         {
             "name": "Date Due",
             "type": FieldType.DATE,
+            "options": {
+                "dateFormat": {
+                    "name": "iso"
+                }
+            }
         },
         {
             "name": "Associated Task",
             "type": FieldType.MULTIPLE_RECORD_LINKS,
+            "options": {
+                "linkedTableId": "Workplan Table"
+            }
         },
     ]
 };

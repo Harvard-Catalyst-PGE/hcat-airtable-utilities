@@ -11,10 +11,20 @@ module.exports = {
         {
             "name": "Start Date",
             "type": FieldType.DATE,
+            "options": {
+                "dateFormat": {
+                    "name": "iso"
+                }
+            }
         },
         {
             "name": "End Date",
             "type": FieldType.DATE,
+            "options": {
+                "dateFormat": {
+                    "name": "iso"
+                }
+            }
         },
         {
             "name": "Notes",
