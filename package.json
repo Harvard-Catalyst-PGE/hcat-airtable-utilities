@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Harvard-Catalyst-PGE/hcat-airtable-utilities#readme",
   "dependencies": {
-    "@airtable/blocks": "^1.5.1",
+    "@airtable/blocks": "^1.10.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   }
