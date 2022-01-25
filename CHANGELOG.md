@@ -1,5 +1,8 @@
 # Changelog
 
+# 0.6.7 - 2022-01-25
+* Add offset parameter in `importCourse` API
+
 # 0.6.6 - 2022-01-24
 * Update packages
 * Update GitHub workflow for new Node version

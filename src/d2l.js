@@ -20,8 +20,7 @@
  *      Content:
  *          - getTOC()
  *          - getTopicFile()
- *          - createRootContent()
- *          - createChildContent()
+ *          - createContent()
  */
 
 class D2LApi {
@@ -63,9 +62,10 @@ class D2LApi {
      * @param {String} apiKey - LMS auth token.
      * @param {String|number} sourceId - ID for the source course.
      * @param {String|number} targetId - ID for the target course.
+     * @param {Number} offset - Number of days to offset course dates.
      * @return {Object} - JobToken id to use for checking status of job.
      */
-    async importCourse(apiKey, sourceId, targetId) {
+    async importCourse(apiKey, sourceId, targetId, offset = null) {
         // Construct endpoint with Target Course
         let endpoint = `${this.endpoint}/${targetId}/import`;
 
@@ -73,7 +73,8 @@ class D2LApi {
         const payload = {
             "SourceOrgUnitId": sourceId,
             "Components": null,
-            "CallbackUrl": null
+            "CallbackUrl": null,
+            "DaysToOffsetDates": offset,
         }
 
         const options = {
