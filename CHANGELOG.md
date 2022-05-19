@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.7.0 - 2022-05-xx
+# 0.7.0 - 2022-05-19
 * Add `createCourseTemplate` route
 * Add generic `makeRequest` route
 * Move `models` out of package into Airtable Manager block
