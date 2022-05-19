@@ -4,8 +4,11 @@
  * HCat API - D2L endpoints
  * 
  * Supported endpoints:
+ *      Generic:
+ *          - makeRequest()
  *      Course:
  *          - createCourse()
+ *          - createTemplate()
  *          - getCourse()
  *          - importCourse()
  *          - getImportCourseJobStatus()
@@ -29,6 +32,30 @@ class D2LApi {
         this.hcat = hcat;
     }
 
+    /**
+     * Generic `makeRequest` method.
+     * 
+     * @param {*} apiKey 
+     * @param {*} method 
+     * @param {*} endpoint 
+     * @param {*} payload 
+     * @returns 
+     */
+    async makeRequest(apiKey, method, endpoint, payload=null) {
+        let options = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+            }
+        }
+
+        if (method === "POST" && payload) {
+            options.body = JSON.stringify(payload);
+        }
+
+        return this.hcat.fetchWrapper(`${this.endpoint}/${endpoint}`, options);
+    }
 
     async createCourse(apiKey, payload) {
         const options = {
@@ -41,6 +68,19 @@ class D2LApi {
         }
 
         return this.hcat.fetchWrapper(`${this.endpoint}/courses`, options);
+    }
+
+    async createTemplate(apiKey, payload) {
+        const options = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+            },
+            body: JSON.stringify(payload),
+        }
+
+        return this.hcat.fetchWrapper(`${this.endpoint}/coursetemplates`, options);
     }
 
     async getCourse(apiKey, courseId) {
