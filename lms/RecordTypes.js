@@ -8,4 +8,5 @@ module.exports = {
     LINK: 6,
     QUIZ: 7,
     DISCUSSION: 8,
+    GRADE: 9,
 }

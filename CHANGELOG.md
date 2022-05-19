@@ -1,5 +1,12 @@
 # Changelog
 
+# 0.7.0 - 2022-05-19
+* Add `createCourseTemplate` route
+* Add generic `makeRequest` route
+* Move `models` out of package into Airtable Manager block
+  * Removes airtable depencency which allows this package to be used in a
+  server setting.
+
 # 0.6.7 - 2022-01-25
 * Add offset parameter in `importCourse` API
 

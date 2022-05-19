@@ -8,4 +8,5 @@ module.exports = {
     6: "topics",
     7: "quizzes",
     8: "discussions",
+    9: "grades"
 }
