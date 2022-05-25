@@ -7,6 +7,8 @@ module.exports = {
     PDF: 5,
     LINK: 6,
     QUIZ: 7,
-    DISCUSSION: 8,
-    GRADE: 9,
+    QUIZ_CATEGORY: 8,
+    DISCUSSION: 9,
+    GRADE: 10,
+    GRADE_CATEGORY: 11,
 }

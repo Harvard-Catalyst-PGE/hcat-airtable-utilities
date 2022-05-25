@@ -1,0 +1,15 @@
+module.exports = {
+    Module: 0,
+    File: 1,
+    Link: 2,
+    Dropbox: 3,
+    Quiz: 4,
+    DiscussionForum: 5,
+    DiscussionTopic: 6,
+    LTI: 7,
+    Chat: 8,
+    Schedule: 9,
+    Checklist: 10,
+    SelfAssessment: 11,
+    Survey: 12,
+}

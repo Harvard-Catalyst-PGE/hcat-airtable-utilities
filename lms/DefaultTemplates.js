@@ -7,4 +7,5 @@ module.exports = {
 	INTERACTIVE_TRANSCRIPTS: '06_How_to_transcripts.hbs',
 	COURSE_CONCLUSION: '08_Course_Conclusion.hbs',
 	SECTION_OVERVIEW: '02_Section_Overview.hbs',
+	BLANK_PAGE: '09_Blank_page.hbs',
 };
