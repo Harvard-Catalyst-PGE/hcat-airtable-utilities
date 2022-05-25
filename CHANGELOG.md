@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.7.1 - 2022-05-25
+* Update default template constants
+* Move more Brightspace constants to this package
+
 # 0.7.0 - 2022-05-19
 * Add `createCourseTemplate` route
 * Add generic `makeRequest` route

@@ -1,0 +1,15 @@
+module.exports = {
+    0: "Module",
+    1: "File",
+    2: "Link",
+    3: "Dropbox",
+    4: "Quiz",
+    5: "DiscussionForum",
+    6: "DiscussionTopic",
+    7: "LTI",
+    8: "Chat",
+    9: "Schedule",
+    10: "Checklist",
+    11: "SelfAssessment",
+    12: "Survey",
+}

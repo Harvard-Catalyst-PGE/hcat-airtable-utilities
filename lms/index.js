@@ -1,4 +1,7 @@
 module.exports = {
+    ActivityType: require('./ActivityType'),
+    ActivityTypeT: require('./ActivityTypeT'),
+    CopyJobStatusT: require('./CopyJobStatusT'),
     DefaultTemplates: require('./DefaultTemplates'),
     ModuleTypes: require('./ModuleTypes'),
     OUTypes: require('./OUTypes'),

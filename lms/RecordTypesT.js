@@ -7,6 +7,8 @@ module.exports = {
     5: "topics",
     6: "topics",
     7: "quizzes",
-    8: "discussions",
-    9: "grades"
+    8: "quiz_categories",
+    9: "discussions",
+    10: "grades",
+    11: "grade_categories",
 }
