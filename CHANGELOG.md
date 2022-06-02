@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.8.0 - 2022-06-xx
+# 0.8.0 - 2022-06-02
 * Include helper functions used in multiple blocks
 * Simplify 'Base' routes to a single `makeRequest` method
 
