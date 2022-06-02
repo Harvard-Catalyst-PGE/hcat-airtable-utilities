@@ -3,6 +3,8 @@ const RuntimeApi = require('./runtime');
 const BaseApi = require('./base');
 const GenerateApi = require('./generate');
 
+const formatQuery = require('../helpers').formatQuery;
+
 class HcatApi {
     constructor(server, baseIds) {
         this._server = server;
@@ -23,19 +25,8 @@ class HcatApi {
      * @returns {Promise<Object>} - server response or error
      */
      fetchWrapper(endpoint, options={}, queryParams={}) {
-        // Optionally format query params
-        if (Object.keys(queryParams).length > 0) {
-            endpoint += "?";
-            
-            for (const [key, value] of Object.entries(queryParams)) {
-            
-                if ((typeof value === "string" && value.length > 0) || value) {
-                    endpoint += `${key}=${value}&`;
-                }
-            }
-        }
-
-        let url = this.server + endpoint;
+        // Format query params, adds "" if none
+        let url = this.server + endpoint + formatQuery(queryParams);
 
         options['cors'] = true;
 
