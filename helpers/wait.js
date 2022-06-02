@@ -1,5 +1,7 @@
-export default async function wait(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
-    })
+module.exports = {
+    wait: async function(ms) {
+        return new Promise (resolve => {
+            setTimeout(resolve, ms);
+        })
+    }
 }
