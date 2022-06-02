@@ -3,12 +3,14 @@ const RuntimeApi = require('./runtime');
 const BaseApi = require('./base');
 const GenerateApi = require('./generate');
 
+const formatQuery = require('../helpers').formatQuery;
+
 class HcatApi {
-    constructor(server, directory, budget, dictionary) {
+    constructor(server, baseIds) {
         this._server = server;
         this.d2l = new D2LApi(this);
         this.runtime = new RuntimeApi(this);
-        this.base = new BaseApi(this, directory, budget, dictionary);
+        this.base = new BaseApi(this, baseIds);
         this.generate = new GenerateApi(this);
     }
 
@@ -23,19 +25,8 @@ class HcatApi {
      * @returns {Promise<Object>} - server response or error
      */
      fetchWrapper(endpoint, options={}, queryParams={}) {
-        // Optionally format query params
-        if (Object.keys(queryParams).length > 0) {
-            endpoint += "?";
-            
-            for (const [key, value] of Object.entries(queryParams)) {
-            
-                if ((typeof value === "string" && value.length > 0) || value) {
-                    endpoint += `${key}=${value}&`;
-                }
-            }
-        }
-
-        let url = this.server + endpoint;
+        // Format query params, adds "" if none
+        let url = this.server + endpoint + formatQuery(queryParams);
 
         options['cors'] = true;
 
@@ -73,21 +64,6 @@ class HcatApi {
                 });
         });
     }
-
-    parseQueryParams(params) {
-        let queryString = "?";
-        
-        for (const [key, value] of Object.entries(params)) {
-            if ((typeof value === "string" && value.length > 0) || value) {
-                queryString += `${key}=${value}&`;
-            }
-        }
-
-        console.log(queryString);
-
-        return queryString;
-    }
-
 };
 
 async function checkStatus(res) {
