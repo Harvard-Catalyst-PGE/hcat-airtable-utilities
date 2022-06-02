@@ -1,5 +1,8 @@
 # Changelog
 
+# 0.8.0 - 2022-06-xx
+* Include helper functions used in multiple blocks
+
 # 0.7.1 - 2022-05-25
 * Update default template constants
 * Move more Brightspace constants to this package
