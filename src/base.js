@@ -1,11 +1,11 @@
 'use strict';
 
 class BaseApi {
-    constructor(hcat, directory, budget, dictionary) {
+    constructor(hcat, baseIds = {}) {
         this.hcat = hcat;
-        this._directory = directory;
-        this._budget = budget;
-        this._dictionary = dictionary;
+        this._directory = baseIds.directory ?? null;
+        this._budget = baseIds.budget ?? null;
+        this._dictionary = baseIds.dictionary ?? null;
     }
     
     get directory() {
@@ -20,70 +20,20 @@ class BaseApi {
         return this._dictionary;
     }
 
-    getQuery(baseType, query) {
-        if (baseType === "budget") {
-            return `?year=${query}`;
-        } else {
-            return `?tables[]=${query}`;
-        }
-    }
-
-    getBaseId(baseType) {
-        if (baseType === "budget") {
-            return this.budget;
-        } else if (baseType === "course") {
-            return this.dictionary;
-        } else if (baseType === "directory") {
-            return this.directory;
-        } else {
-            return null;
-        }
-   }
-
-    async createRecords(apiKey, baseType, table, payload) {
-        let baseId = this.getBaseId(baseType);
-        let query = this.getQuery(baseType, table);
-
-        const options = {
-            method: "POST",
+    async makeRequest(apiKey, method, baseId, queryParams = {}, payload = null) {
+        let options = {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': apiKey
-            },
-            body: JSON.stringify(payload),
-        };
-
-        return this.hcat.fetchWrapper(`/${baseType}/${baseId}${query}`, options);
-    }
-
-    async fetchRecords(apiKey, baseType, table) {
-        let baseId = this.getBaseId(baseType);
-        let query = this.getQuery(baseType, table);
-
-        const options = {
-            method: "GET",
-            headers: {
                 'x-api-key': apiKey,
-            },
-        };
+            }
+        }
 
-        return this.hcat.fetchWrapper(`/${baseType}/${baseId}${query}`, options);
-    }
+        if (payload) {
+            options.body = JSON.stringify(payload);
+        }
 
-    async updateRecords(apiKey, baseType, table, payload) {
-        let baseId = this.getBaseId(baseType);
-        let query = this.getQuery(baseType, table);
-
-        const options = {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey
-            },
-            body: JSON.stringify(payload),
-        };
-
-        return this.hcat.fetchWrapper(`/${baseType}/${baseId}${query}`, options);
+        return this.hcat.fetchWrapper(`/${baseId}`, options, queryParams);
     }
 }
 

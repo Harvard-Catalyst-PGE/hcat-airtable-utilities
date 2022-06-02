@@ -2,6 +2,7 @@
 
 # 0.8.0 - 2022-06-xx
 * Include helper functions used in multiple blocks
+* Simplify 'Base' routes to a single `makeRequest` method
 
 # 0.7.1 - 2022-05-25
 * Update default template constants

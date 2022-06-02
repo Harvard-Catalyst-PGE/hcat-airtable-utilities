@@ -4,11 +4,11 @@ const BaseApi = require('./base');
 const GenerateApi = require('./generate');
 
 class HcatApi {
-    constructor(server, directory, budget, dictionary) {
+    constructor(server, baseIds) {
         this._server = server;
         this.d2l = new D2LApi(this);
         this.runtime = new RuntimeApi(this);
-        this.base = new BaseApi(this, directory, budget, dictionary);
+        this.base = new BaseApi(this, baseIds);
         this.generate = new GenerateApi(this);
     }
 
@@ -73,21 +73,6 @@ class HcatApi {
                 });
         });
     }
-
-    parseQueryParams(params) {
-        let queryString = "?";
-        
-        for (const [key, value] of Object.entries(params)) {
-            if ((typeof value === "string" && value.length > 0) || value) {
-                queryString += `${key}=${value}&`;
-            }
-        }
-
-        console.log(queryString);
-
-        return queryString;
-    }
-
 };
 
 async function checkStatus(res) {
