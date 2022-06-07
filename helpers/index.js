@@ -1,6 +1,6 @@
 module.exports = {
-    batchProcess: require('./batchProcess'),
-    checkPermissions: require('./checkPermissions'),
+    batchProcess: require('./batchProcess').batchProcess,
+    checkPermissions: require('./checkPermissions').checkPermissions,
     formatQuery: require('./formatQuery').formatQuery,
-    wait: require('./wait'),
+    wait: require('./wait').wait,
 }
