@@ -1,4 +1,4 @@
-const checkPermissions = require('./checkPermissions');
+const checkPermissions = require('./checkPermissions').checkPermissions;
 const BULK_PROCESS_MAX = 50;
 
 module.exports = {
