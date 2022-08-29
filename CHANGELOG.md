@@ -1,5 +1,8 @@
 # Changelog
 
+# 0.8.2 - 2022-08-29
+* Modify D2L content routes to use data from payload object.
+
 # 0.8.1 - 2022-06-07
 * Update helper imports.
 
