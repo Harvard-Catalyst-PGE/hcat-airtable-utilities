@@ -293,6 +293,19 @@ class D2LApi {
         return this.hcat.fetchWrapper(endpoint, options);
     }
 
+    async getModule(apiKey, orgUnitId, moduleId) {
+        let endpoint = `/d2l/${orgUnitId}/modules/${moduleId}`;
+
+        const options = {
+            method: "GET",
+            headers: {
+                'x-api-key': apiKey
+            }
+        }
+
+        return this.hcat.fetchWrapper(endpoint, options);
+    }
+
     async getTopicFile(apiKey, orgUnitId, topicId) {
         let endpoint = `/d2l/${orgUnitId}/topics/${topicId}/file`;
         
@@ -306,12 +319,8 @@ class D2LApi {
         return this.hcat.fetchWrapper(endpoint, options);
     }
 
-    async createContent(apiKey, payload, orgUnitId, contentType, moduleId = null) {
-        let endpoint = `/d2l/${orgUnitId}/${contentType}`;
-
-        if (moduleId) {
-            endpoint += `/${moduleId}`;
-        }
+    async createContent(apiKey, payload) {
+        let endpoint = `/d2l/${payload.OrgUnitProperties.Identifier}/${payload.type}`;
 
         console.log(`Creating ${endpoint}`);
         const options = {
@@ -326,8 +335,8 @@ class D2LApi {
         return this.hcat.fetchWrapper(endpoint, options);
     }
 
-    async createDiscussionTopic(apiKey, payload, orgUnitId, forumId) {
-        let endpoint = `/d2l/${orgUnitId}/discussions/${forumId}/topics`;
+    async createDiscussionTopic(apiKey, payload) {
+        let endpoint = `/d2l/${payload.OrgUnitProperties.Identifier}/discussions/${payload.parentModule.ForumId}/topics`;
 
         console.log(`Creating ${endpoint}`);
 
