@@ -6,6 +6,10 @@ module.exports = {
             query += "?";
     
             for (const [key, value] of Object.entries(queryParams)) {
+                if (!value) {
+                    continue;
+                }
+                
                 query += `${key}=${value}&`;
             }
         }
