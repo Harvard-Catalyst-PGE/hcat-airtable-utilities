@@ -1,5 +1,8 @@
 # Changelog
 
+# 0.8.5 - 2022-08-30
+* Patch fix: still include check for if `record === undefined`
+
 # 0.8.4 - 2022-08-30
 * Patch fix: filter out record updates by `record.id`, not just `record`
 
