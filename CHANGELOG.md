@@ -1,5 +1,8 @@
 # Changelog
 
+# 0.8.3 - 2022-08-30
+* Remove blank query params from requests
+
 # 0.8.2 - 2022-08-29
 * Modify D2L content routes to use data from payload object.
 
