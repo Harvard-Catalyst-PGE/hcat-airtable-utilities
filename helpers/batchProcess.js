@@ -7,7 +7,8 @@ module.exports = {
         let records = [];
 
         if (operation === "create") {
-            records = data.filter(record => record);
+            // records = data.filter(record => record);
+            records = data;
         } else {
             records = data.filter(record => record && record.id !== undefined);
         }
