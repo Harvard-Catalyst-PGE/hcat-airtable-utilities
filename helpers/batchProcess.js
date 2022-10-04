@@ -4,7 +4,13 @@ const BULK_PROCESS_MAX = 50;
 module.exports = {
     batchProcess: async function (operation, table, data) {
         let recordIds = [];
-        let records = data.filter(record => record && record.id !== undefined);
+        let records = [];
+
+        if (operation === "create") {
+            records = data.filter(record => record);
+        } else {
+            records = data.filter(record => record && record.id !== undefined);
+        }
     
         if (checkPermissions(operation, table, records)) {
             while(records.length > 0) {
