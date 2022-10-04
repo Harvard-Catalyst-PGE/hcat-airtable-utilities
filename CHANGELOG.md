@@ -1,5 +1,8 @@
 # Changelog
 
+# 0.8.6 - 2022-10-04
+* Patch fix: only exclude records without 'id' for batch creation.
+
 # 0.8.5 - 2022-08-30
 * Patch fix: still include check for if `record === undefined`
 

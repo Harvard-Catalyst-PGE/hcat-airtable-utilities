@@ -1,6 +1,6 @@
 {
   "name": "@hcat-pge/hcat-airtable-utilities",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "A collection of utilities for creating Airtable apps for HCat",
   "main": "index.js",
   "scripts": {
