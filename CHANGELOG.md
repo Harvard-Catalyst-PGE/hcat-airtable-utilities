@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.8.8 - 2022-10-06
+* Fix: remove filtering of data before batch processing. Assumed to be in record
+format.
+
 # 0.8.6 - 2022-10-04
 * Patch fix: only exclude records without 'id' for batch creation.
 
