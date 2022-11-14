@@ -4,96 +4,28 @@
  * HCat API - D2L endpoints
  * 
  * Supported endpoints:
- *      Generic:
- *          - makeRequest()
  *      Course:
- *          - createCourse()
- *          - createTemplate()
- *          - getCourse()
  *          - importCourse()
  *          - getImportCourseJobStatus()
  *          - getCourseListing()
+ *      OrgUnit:
+ *          - getOrgInfo()
  *      Users:
- *          - getEnrollments()
- *          - getRoles()
  *          - createUser()
  *          - fetchUser()
+ *          - updateUserPassword()
  *          - createUserEnrollment()
  *          - deleteUserEnrollment()
  *      Content:
- *          - getTOC()
- *          - getTopicFile()
+ *          - getContent()
  *          - createContent()
+ *          - createDiscussionTopic()
  */
 
 class D2LApi {
     constructor(hcat) {
         this.endpoint = "/d2l";
         this.hcat = hcat;
-    }
-
-    /**
-     * Generic `makeRequest` method.
-     * 
-     * @param {*} apiKey 
-     * @param {*} method 
-     * @param {*} endpoint 
-     * @param {*} payload 
-     * @returns 
-     */
-    async makeRequest(apiKey, method, endpoint, payload=null) {
-        let options = {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-            }
-        }
-
-        if (method === "POST" && payload) {
-            options.body = JSON.stringify(payload);
-        }
-
-        return this.hcat.fetchWrapper(`${this.endpoint}/${endpoint}`, options);
-    }
-
-    async createCourse(apiKey, payload) {
-        const options = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-            },
-            body: JSON.stringify(payload),
-        }
-
-        return this.hcat.fetchWrapper(`${this.endpoint}/courses`, options);
-    }
-
-    async createTemplate(apiKey, payload) {
-        const options = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-            },
-            body: JSON.stringify(payload),
-        }
-
-        return this.hcat.fetchWrapper(`${this.endpoint}/coursetemplates`, options);
-    }
-
-    async getCourse(apiKey, courseId) {
-        let endpoint = `${this.endpoint}/courses/${courseId}`;
-
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey
-            }
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
     }
 
     /**
@@ -105,7 +37,7 @@ class D2LApi {
      * @param {Number} offset - Number of days to offset course dates.
      * @return {Object} - JobToken id to use for checking status of job.
      */
-    async importCourse(apiKey, sourceId, targetId, offset = null) {
+    async importCourse(sourceId, targetId, offset = null) {
         // Construct endpoint with Target Course
         let endpoint = `${this.endpoint}/${targetId}/import`;
 
@@ -117,16 +49,7 @@ class D2LApi {
             "DaysToOffsetDates": offset,
         }
 
-        const options = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-            },
-            body: JSON.stringify(payload),
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
+        return this.hcat.fetchWrapper("POST", endpoint, payload);
     }
 
     /**
@@ -144,212 +67,81 @@ class D2LApi {
      * @param {String} jobId - The JobToken for the copy.
      * @returns {String} The current status of the copy job.
      */
-    async getImportCourseJobStatus(apiKey, targetId, jobId) {
+    async getImportCourseJobStatus(targetId, jobId) {
         let endpoint = `${this.endpoint}/${targetId}/import/${jobId}`;
 
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey
-            }
-        }
-
-        let response = await this.hcat.fetchWrapper(endpoint, options);
+        let response = await this.hcat.fetchWrapper("GET", endpoint);
         return response.Status;
     }
 
 
-    async getCourseListing({apiKey, orgUnitId=null, queryParams = {}}) {
+    async getCourseListing({orgUnitId=null, queryParams = {}}) {
         let endpoint = `/d2l/orgstructure/`;
         // let endpoint = `/d2l/orgstructure/${orgUnitId}/descendants/paged`;
-        
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey
-            }
-        }
 
         // Request specific course if ID provided        
         if (orgUnitId) {
             endpoint += orgUnitId;
         }
 
-        return this.hcat.fetchWrapper(endpoint, options, queryParams);
+        return this.hcat.fetchWrapper("GET", endpoint, null, queryParams);
     }
 
-    async getEnrollments(apiKey, orgUnitId) {
-        let endpoint = `/d2l/${orgUnitId}/classlist`;
-
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey
-            }
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
+    async getOrgInfo(orgUnitId, target) {
+        let endpoint = `/d2l/${orgUnitId}/${target}`;
+        return this.hcat.fetchWrapper("GET", endpoint);
     }
 
-    async getRoles(apiKey, orgUnitId) {
-        let endpoint = `/d2l/${orgUnitId}/roles`;
-
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey
-            }
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
-    }
-
-    async getTOC(apiKey, orgUnitId) {
-        let endpoint = `/d2l/${orgUnitId}/toc`;
-        
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey
-            }
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
-    }
-
-    async createUser(apiKey, payload) {
-        console.log("UTILITY CREATE USER");
+    async createUser(payload) {
         let endpoint = `/d2l/users`;
-
-        const options = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-            },
-            body: JSON.stringify(payload)
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
+        return this.hcat.fetchWrapper("POST", endpoint, payload);
     }
 
-    async fetchUser(apiKey, queryParams) {
+    async fetchUser(queryParams) {
         let endpoint = `/d2l/users`;
-
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey
-            }
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options, queryParams);
+        return this.hcat.fetchWrapper("GET", endpoint, null, queryParams);
     }
 
-    async updateUserPassword(apiKey, userId, password) {
+    async updateUserPassword(userId, password) {
         let endpoint = `/d2l/users/${userId}/password`;
+        let payload = {"Password": password}
 
-        const options = {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-            },
-            body: JSON.stringify({"Password": password})
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
+        return this.hcat.fetchWrapper("PUT", endpoint, payload);
     }
 
-    async createUserEnrollment(apiKey, orgUnitId, userId, roleId) {
-        let endpoint = `/d2l/${orgUnitId}/enroll/${userId}`;
+    async createUserEnrollment(orgUnitId, user) {
+        let endpoint = `/d2l/${orgUnitId}/enroll/${user.fields.Identifier}`;
 
         const payload = {
-            "RoleId": roleId,
+            "RoleId": user.fields.RoleId,
         }
 
-        const options = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-            },
-            body: JSON.stringify(payload)
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
+        return this.hcat.fetchWrapper("POST", endpoint, payload);
     }
 
-    async deleteUserEnrollment(apiKey, orgUnitId, userId) {
+    async deleteUserEnrollment(orgUnitId, userId) {
         let endpoint = `/d2l/${orgUnitId}/enroll/${userId}`;
-
-        const options = {
-            method: "DELETE",
-            headers: {
-                'x-api-key': apiKey,
-            }
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
+        return this.hcat.fetchWrapper("DELETE", endpoint);
     }
 
-    async getModule(apiKey, orgUnitId, moduleId) {
-        let endpoint = `/d2l/${orgUnitId}/modules/${moduleId}`;
+    async getContent(orgUnitId, type, id, file=false) {
+        let endpoint = `/d2l/${orgUnitId}/${type}/${id}`;
 
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey
-            }
+        if (file) {
+            endpoint += "/file";
         }
 
-        return this.hcat.fetchWrapper(endpoint, options);
+        return this.hcat.fetchWrapper("GET", endpoint);
     }
 
-    async getTopicFile(apiKey, orgUnitId, topicId) {
-        let endpoint = `/d2l/${orgUnitId}/topics/${topicId}/file`;
-        
-        const options = {
-            method: "GET",
-            headers: {
-                'x-api-key': apiKey
-            }
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
-    }
-
-    async createContent(apiKey, payload) {
+    async createContent(payload) {
         let endpoint = `/d2l/${payload.OrgUnitProperties.Identifier}/${payload.type}`;
-
-        console.log(`Creating ${endpoint}`);
-        const options = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-            },
-            body: JSON.stringify(payload)
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
+        return this.hcat.fetchWrapper("POST", endpoint, payload);
     }
 
-    async createDiscussionTopic(apiKey, payload) {
+    async createDiscussionTopic(payload) {
         let endpoint = `/d2l/${payload.OrgUnitProperties.Identifier}/discussions/${payload.parentModule.ForumId}/topics`;
-
-        console.log(`Creating ${endpoint}`);
-
-        const options = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-            },
-            body: JSON.stringify(payload)
-        }
-
-        return this.hcat.fetchWrapper(endpoint, options);
+        return this.hcat.fetchWrapper("POST", endpoint, payload);
     }
 }
 

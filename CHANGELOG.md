@@ -1,5 +1,13 @@
 # Changelog
 
+# 1.0.0 - 2022-11-14
+
+__Features:__
+
+* Simplify API route structure. Condense more into the main `fetchWrapper()` function.
+* Function to `addChoicesToSelect`.
+* Function to `validateTable`.
+
 # 0.8.8 - 2022-10-06
 * Fix: remove filtering of data before batch processing. Assumed to be in record
 format.

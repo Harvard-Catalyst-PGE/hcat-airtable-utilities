@@ -1,34 +1,77 @@
 const D2LApi = require('./d2l');
-const RuntimeApi = require('./runtime');
-const BaseApi = require('./base');
-const GenerateApi = require('./generate');
 
 const formatQuery = require('../helpers').formatQuery;
 
 class HcatApi {
-    constructor(server, baseIds) {
+    constructor(server, lmsDomain, baseIds) {
         this._server = server;
+        this._lmsDomain = lmsDomain;
+        this._apiKey = null;
         this.d2l = new D2LApi(this);
-        this.runtime = new RuntimeApi(this);
-        this.base = new BaseApi(this, baseIds);
-        this.generate = new GenerateApi(this);
+
+        // Base IDs for Airtable routes
+        this._directory = baseIds.directory ?? null;
+        this._budget = baseIds.budget ?? null;
+        this._workplan = baseIds.workplan ?? null;
     }
 
+    /**
+     * @returns {string}
+     */
     get server() {
         return this._server;
+    }
+    
+    /**
+     * @returns {string}
+     */
+    get lmsDomain() {
+        return this._lmsDomain;
+    }
+
+    /**
+     * @param {string} token
+     */
+    set apiKey(token) {
+        this._apiKey = token;
+    }
+
+    get directory() {
+        return this._directory;
+    }
+
+    get budget() {
+        return this._budget;
+    }
+
+    get workplan() {
+        return this._workplan;
     }
 
     /**
      * Sends request to server via fetch API and handles error cases
-     * @param {string} endpoint - server endpoint
-     * @param {Object} options - options parameter for `fetch` call
+     * @param {string} method - server endpoint
+     * @param {string} endpoint - options parameter for `fetch` call
+     * @param {Object|null} payload - options parameter for `fetch` call
+     * @param {Object} queryParams - options parameter for `fetch` call
      * @returns {Promise<Object>} - server response or error
      */
-     fetchWrapper(endpoint, options={}, queryParams={}) {
+     fetchWrapper(method, endpoint, payload=null, queryParams={}) {
+        let options = {
+            method: method,
+            cors: true,
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': this._apiKey,
+            }
+        }
+
+        if ((method === "POST" || method === "PUT" || method === "PATCH") && payload) {
+            options.body = JSON.stringify(payload);
+        }
+
         // Format query params, adds "" if none
         let url = this.server + endpoint + formatQuery(queryParams);
-
-        options['cors'] = true;
 
         return new Promise((resolve, reject) => {
             fetch(url, options)
