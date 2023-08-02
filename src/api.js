@@ -56,7 +56,7 @@ class HcatApi {
      * @param {Object} queryParams - options parameter for `fetch` call
      * @returns {Promise<Object>} - server response or error
      */
-     fetchWrapper(method, endpoint, payload=null, queryParams={}) {
+     fetchWrapper(method, endpoint, payload=null, queryParams={}, fullUrl = null) {
         let options = {
             method: method,
             cors: true,
@@ -72,6 +72,10 @@ class HcatApi {
 
         // Format query params, adds "" if none
         let url = this.server + endpoint + formatQuery(queryParams);
+
+        if (fullUrl) {
+            url = fullUrl;
+        }
 
         return new Promise((resolve, reject) => {
             fetch(url, options)

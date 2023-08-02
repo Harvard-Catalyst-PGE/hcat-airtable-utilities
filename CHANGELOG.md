@@ -1,5 +1,13 @@
 # Changelog
 
+# 1.1.0 - 2023-08-02
+
+__Features:__
+
+* Condense `fetchWrapper` further to increase compatibility between
+helper package and backend server code.
+* Add Syllabus-v2 to template list.
+
 # 1.0.0 - 2022-11-14
 
 __Features:__
