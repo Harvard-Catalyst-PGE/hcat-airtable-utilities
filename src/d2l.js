@@ -77,7 +77,6 @@ class D2LApi {
 
     async getCourseListing({orgUnitId=null, queryParams = {}}) {
         let endpoint = `/d2l/orgstructure/`;
-        // let endpoint = `/d2l/orgstructure/${orgUnitId}/descendants/paged`;
 
         // Request specific course if ID provided        
         if (orgUnitId) {

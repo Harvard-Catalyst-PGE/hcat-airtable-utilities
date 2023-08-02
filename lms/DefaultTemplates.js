@@ -1,5 +1,6 @@
 module.exports = {
 	SYLLABUS: '01_Syllabus.hbs',
+	SYLLABUS_V2: '01_Syllabus-v2.hbs',
 	COURSE_OVERVIEW: '02_Course_Overview.hbs',
 	MEET_INSTRUCTOR: '03_Meet_Course_Director.hbs',
 	PASSWORD_CHANGE: '04_Password_Change.hbs',
