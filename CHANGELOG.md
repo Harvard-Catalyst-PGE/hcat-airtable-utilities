@@ -6,6 +6,9 @@ __Features:__
 
 * Add helper for `setSettingValues`. Used in `useEffects` when loading data
 from LMS.
+* Add helper for `createRequiredFields`. Checks permissions and creates 
+fields passed in.
+
 # 1.1.0 - 2023-08-02
 
 __Features:__
