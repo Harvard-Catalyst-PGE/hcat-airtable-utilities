@@ -1,5 +1,11 @@
 # Changelog
 
+# 1.2.0 - 2023-xx-xx
+
+__Features:__
+
+* Add helper for `setSettingValues`. Used in `useEffects` when loading data
+from LMS.
 # 1.1.0 - 2023-08-02
 
 __Features:__
