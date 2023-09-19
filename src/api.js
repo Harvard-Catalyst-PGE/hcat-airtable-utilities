@@ -1,6 +1,6 @@
 const D2LApi = require('./d2l');
-
-const formatQuery = require('../helpers').formatQuery;
+const checkFetchStatus = require('../helpers').checkFetchStatus;
+const parseResponse = require('../helpers').parseResponse;
 
 class HcatApi {
     constructor(server, lmsDomain, baseIds) {
@@ -71,40 +71,21 @@ class HcatApi {
         }
 
         // Format query params, adds "" if none
-        let url = this.server + endpoint + formatQuery(queryParams);
+        let url = new URL(`${this.server}${endpoint}?${new URLSearchParams(queryParams)}`);
 
         if (fullUrl) {
             url = fullUrl;
         }
 
+        const request = new Request(url, options);
+
         return new Promise((resolve, reject) => {
-            fetch(url, options)
+            fetch(request)
                 .then(async (res) => {
-                    return await checkStatus(res);
+                    return await checkFetchStatus(res);
                 })
                 .then(async (res) => {
-                    const contentType = res.headers.get("Content-Type");
-                    
-                    if(!contentType) {
-                        // No ontent type specified; just return
-                        return resolve(res);
-                    } else if (contentType.indexOf("application/json") !== -1) {
-                        // Response is JSON, parse and return
-                        const json = await res.json();
-                        return resolve(json);
-                    } else if (contentType.startsWith("text/")) {
-                        // Response is text-like, parse and return
-                        const text = await res.text();
-                        return resolve(text);
-                    } else if (contentType.indexOf("application/octet-stream") !== -1) {
-                        // Response is a buffer; load data and return Reader
-                        let reader = res.body.getReader();
-                        return resolve(reader);
-                    } else {
-                        // Unknown content-type case; reject with message
-                        console.error("UNKNOWN RESPONSE");
-                        return reject(res);
-                    }
+                    return parseResponse(res, resolve, reject);
                 })
                 .catch(err => {
                     return reject(err);
@@ -112,30 +93,5 @@ class HcatApi {
         });
     }
 };
-
-async function checkStatus(res) {
-    if (res.ok) {
-        return res;
-    } else {
-        let message = res.statusText;
-
-        try {
-            let json = await res.json();
-            
-            if (json.Errors) {
-                message = json.Errors.map((error) => {
-                    return error.Message;
-                });
-            }
-        } catch (e) {
-            // Error is not JSON-formatted; do not handle
-        }
-        
-        throw {
-            status: res.status,
-            statusText: message,
-        };
-    }
-}
 
 module.exports = HcatApi;

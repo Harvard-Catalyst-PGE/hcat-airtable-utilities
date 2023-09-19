@@ -1,6 +1,6 @@
 # Changelog
 
-# 1.2.0 - 2023-xx-xx
+# 2.0.0 - 2023-xx-xx
 
 __Features:__
 
@@ -8,6 +8,9 @@ __Features:__
 from LMS.
 * Add helper for `createRequiredFields`. Checks permissions and creates 
 fields passed in.
+__Refactor:__
+
+* Move some `fetchWrapper` code to helper methods.
 
 # 1.1.0 - 2023-08-02
 
