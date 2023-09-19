@@ -1,12 +1,26 @@
 const D2LApi = require('./d2l');
 const checkFetchStatus = require('../helpers').checkFetchStatus;
 const parseResponse = require('../helpers').parseResponse;
+const EXPIRY = 1000 * 60 * 60;  // Hour expiry time
 
 class HcatApi {
-    constructor(server, lmsDomain, baseIds) {
+    #apiUser;
+    #apiKey;
+    #apiKeyIv;
+    #refreshToken;
+    #refreshTokenIv;
+
+    constructor(server, baseIds, localStorage = null) {
         this._server = server;
-        this._lmsDomain = lmsDomain;
-        this._apiKey = null;
+        
+        this.#apiUser = "";
+        this.#apiKey = null;
+        this.#apiKeyIv = null;
+        this.#refreshToken = null;
+        this.#refreshTokenIv = null;
+
+        this.localStorage = localStorage;
+
         this.d2l = new D2LApi(this);
 
         // Base IDs for Airtable routes
@@ -21,19 +35,37 @@ class HcatApi {
     get server() {
         return this._server;
     }
-    
-    /**
-     * @returns {string}
-     */
-    get lmsDomain() {
-        return this._lmsDomain;
+
+    getUser(app) {
+        let user = this.localStorage.getItem(`${app}User`);
+        return user ?? "Not logged in yet.";
     }
 
     /**
      * @param {string} token
      */
     set apiKey(token) {
-        this._apiKey = token;
+        this.#apiKey = token;
+    }
+
+    set apiKeyIv(iv) {
+        this.#apiKeyIv = iv;
+    }
+    
+    set refreshToken(token) {
+        this.#refreshToken = token;
+    }
+
+    set refreshTokenIv(iv) {
+        this.#refreshTokenIv = iv;
+    }
+
+    set apiUser(user) {
+        let app = (user.UniqueName) ? "lms" : "airtable";
+        let name = user.FirstName + " " + user.LastName;
+
+        this.#apiUser = `${name} (${user.Identifier})`;
+        this.localStorage.setItem(`${app}User`, this.#apiUser);
     }
 
     get directory() {
@@ -48,6 +80,57 @@ class HcatApi {
         return this._workplan;
     }
 
+    validateApiKey() {
+        return this.#apiKey !== null;
+    }
+
+    getTokens(app) {
+        this.#apiKey = this.localStorage.getItem(app);
+        this.#apiKeyIv = this.localStorage.getItem(app + "Iv");
+        this.#refreshToken = this.localStorage.getItem(app + "Refresh");
+        this.#refreshTokenIv = this.localStorage.getItem(app + "RefreshIv");
+        this.expiry = new Date(this.localStorage.getItem(app + "Expiry"));
+    }
+
+    setTokens(app, tokens) {
+        const now = new Date();
+        const expiry = new Date();
+        expiry.setTime(now.getTime() + EXPIRY);
+
+        // Set in memory
+        this.#apiKey = tokens.authToken.encryptedValue;
+        this.#apiKeyIv = tokens.authToken.iv;
+        this.#refreshToken = tokens.refreshToken.encryptedValue;
+        this.#refreshTokenIv = tokens.refreshToken.iv;
+        this.expiry = expiry;
+        
+        // Set in local storage
+        this.localStorage.setItem(app, tokens.authToken.encryptedValue);
+        this.localStorage.setItem(app + "Iv", tokens.authToken.iv);
+        this.localStorage.setItem(app + "Refresh", tokens.refreshToken.encryptedValue);
+        this.localStorage.setItem(app + "RefreshIv", tokens.refreshToken.iv);
+        this.localStorage.setItem(app + "Expiry", expiry);
+    }
+
+    async exchangeTokens(app) {
+        console.log(`Refreshing ${app} tokens`);
+
+        const payload = {
+            refreshToken: this.#refreshToken,
+            refreshTokenIv: this.#refreshTokenIv,
+        }
+
+        this.expiry = null;
+        let response = await this.fetchWrapper({
+            method: 'POST',
+            endpoint: `/auth/callback`,
+            payload: payload,
+            queryParams: {platform: app}
+        });
+        this.setTokens(app, response);
+        return;
+    }
+
     /**
      * Sends request to server via fetch API and handles error cases
      * @param {string} method - server endpoint
@@ -57,12 +140,19 @@ class HcatApi {
      * @returns {Promise<Object>} - server response or error
      */
      async fetchWrapper({method = "GET", endpoint = '', payload = null, queryParams = {}, fullUrl = null} = {}) {
+        const now = new Date();
+
+        if (this.expiry && this.expiry <= now) {
+            await this.exchangeTokens("lms");
+        }
+
         let options = {
             method: method,
             cors: true,
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': this._apiKey,
+                'x-api-key': this.#apiKey,
+                'x-api-iv': this.#apiKeyIv,
             }
         }
 

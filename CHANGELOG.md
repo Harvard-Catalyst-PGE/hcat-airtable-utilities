@@ -8,6 +8,9 @@ __Features:__
 from LMS.
 * Add helper for `createRequiredFields`. Checks permissions and creates 
 fields passed in.
+* Add support for API keys and local storage. Includes refresh of tokens
+on expiry.
+
 __Refactor:__
 
 * Move some `fetchWrapper` code to helper methods.
