@@ -11,6 +11,7 @@ fields passed in.
 __Refactor:__
 
 * Move some `fetchWrapper` code to helper methods.
+* Change `fetchWrapper` to named params.
 
 # 1.1.0 - 2023-08-02
 
