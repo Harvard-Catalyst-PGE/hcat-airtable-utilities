@@ -10,21 +10,28 @@ module.exports = {
         }
 
         for (let fieldName of requiredFields) {
+            if (!fieldName) {
+                continue;
+            }
+
             let requiredField = table.getFieldByNameIfExists(fieldName);
             let modelField = model.fields[fieldName];
+
+            if (!modelField) {
+                throw new Error(`The '${fieldName}' field does not exist in the model.`);
+            }
 
             if (!requiredField) {
                 console.log(`Creating ${modelField.type} field ${fieldName}`);
                 
                 if (table.hasPermissionToCreateField(fieldName, ...Object.values(modelField))) {
                     await table.createFieldAsync(fieldName, ...Object.values(modelField));
-                    fields.push(fieldName);
                 }
-            } else if (requiredField.type !== modelField.type) {
+            } else if (requiredField?.type !== modelField.type) {
                 throw new Error(`${fieldName} field is not of type ${requiredField.type}. Please correct before continuing.`);
             }
         }
 
-        return;
+        return requiredFields;
     }
 }

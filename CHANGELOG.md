@@ -16,6 +16,9 @@ __Refactor:__
 * Move some `fetchWrapper` code to helper methods.
 * Change `fetchWrapper` to named params.
 
+__Fixes:__
+* Fixes and additions to helper methods.
+
 # 1.1.0 - 2023-08-02
 
 __Features:__

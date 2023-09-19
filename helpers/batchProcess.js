@@ -2,7 +2,7 @@ const checkPermissions = require('./checkPermissions').checkPermissions;
 const BULK_PROCESS_MAX = 50;
 
 module.exports = {
-    batchProcess: async function (operation, table, records) {
+    batchProcess: async function (operation, table, records = []) {
         console.log(`Performing batch ${operation} of records in Airtable.`);
         console.log(records);
         
