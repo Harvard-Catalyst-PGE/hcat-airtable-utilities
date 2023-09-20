@@ -1,6 +1,6 @@
 module.exports = {
     checkFetchStatus: async function (res) {
-        if (res.ok) {
+        if (res.ok || res.status === 308) {
             return res;
         } else {
             let message = res.statusText;
@@ -14,6 +14,12 @@ module.exports = {
                     });
                 } else if (json.message) {
                     message = json.message;
+                } else if (json.Message) {
+                    message = json.Message;
+                } else if (json.detail) {
+                    message = json.detail;
+                } else if (json.error) {
+                    message = `${json.error.type}-${json.error.message}`;
                 }
             } catch (e) {
                 // Error is not JSON-formatted; do not handle
