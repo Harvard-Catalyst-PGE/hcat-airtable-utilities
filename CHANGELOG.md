@@ -1,5 +1,24 @@
 # Changelog
 
+# 2.0.0 - 2023-09-20
+
+__Features:__
+
+* Add helper for `setSettingValues`. Used in `useEffects` when loading data
+from LMS.
+* Add helper for `createRequiredFields`. Checks permissions and creates 
+fields passed in.
+* Add support for API keys and local storage. Includes refresh of tokens
+on expiry.
+
+__Refactor:__
+
+* Move some `fetchWrapper` code to helper methods.
+* Change `fetchWrapper` to named params.
+
+__Fixes:__
+* Fixes and additions to helper methods.
+
 # 1.1.0 - 2023-08-02
 
 __Features:__
