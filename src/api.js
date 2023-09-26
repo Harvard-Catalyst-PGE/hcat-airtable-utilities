@@ -19,6 +19,7 @@ class HcatApi {
         this.#refreshToken = null;
         this.#refreshTokenIv = null;
 
+        this.app = "";
         this.localStorage = localStorage;
 
         this.d2l = new D2LApi(this);
@@ -89,7 +90,13 @@ class HcatApi {
         this.#apiKeyIv = this.localStorage.getItem(app + "Iv");
         this.#refreshToken = this.localStorage.getItem(app + "Refresh");
         this.#refreshTokenIv = this.localStorage.getItem(app + "RefreshIv");
-        this.expiry = new Date(this.localStorage.getItem(app + "Expiry"));
+        this.app = app;
+
+        const expiry = this.localStorage.getItem(app + "Expiry");
+        
+        if (expiry) {
+            this.expiry = new Date(expiry);
+        }
     }
 
     setTokens(app, tokens) {
@@ -103,6 +110,7 @@ class HcatApi {
         this.#refreshToken = tokens.refreshToken.encryptedValue;
         this.#refreshTokenIv = tokens.refreshToken.iv;
         this.expiry = expiry;
+        this.app = app;
         
         // Set in local storage
         this.localStorage.setItem(app, tokens.authToken.encryptedValue);
@@ -112,8 +120,8 @@ class HcatApi {
         this.localStorage.setItem(app + "Expiry", expiry);
     }
 
-    async exchangeTokens(app) {
-        console.log(`Refreshing ${app} tokens`);
+    async exchangeTokens() {
+        console.log(`Refreshing ${this.app} tokens`);
 
         const payload = {
             refreshToken: this.#refreshToken,
@@ -125,9 +133,9 @@ class HcatApi {
             method: 'POST',
             endpoint: `/auth/callback`,
             payload: payload,
-            queryParams: {platform: app}
+            queryParams: {platform: this.app}
         });
-        this.setTokens(app, response);
+        this.setTokens(this.app, response);
         return;
     }
 
@@ -143,7 +151,7 @@ class HcatApi {
         const now = new Date();
 
         if (this.expiry && this.expiry <= now) {
-            await this.exchangeTokens("lms");
+            await this.exchangeTokens();
         }
 
         let options = {
