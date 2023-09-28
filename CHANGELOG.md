@@ -1,5 +1,11 @@
 # Changelog
 
+# 2.0.1 - 2023-09-28
+
+__Fixes:__
+
+* Ability to refresh any auth tokens instead of hard-coded 'lms'.
+
 # 2.0.0 - 2023-09-20
 
 __Features:__
