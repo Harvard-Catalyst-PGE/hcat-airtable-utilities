@@ -37,6 +37,10 @@ class HcatApi {
         return this._server;
     }
 
+    set server(server) {
+        this._server = server;
+    }
+
     getUser(app) {
         let user = this.localStorage.getItem(`${app}User`);
         return user ?? "Not logged in yet.";

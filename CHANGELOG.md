@@ -5,6 +5,7 @@
 __Fixes:__
 
 * createRequiredFields(): only check table if there are fields to check.
+* Add setter to update server to allow for dev, stage, and prod
 
 # 2.0.1 - 2023-09-28
 
