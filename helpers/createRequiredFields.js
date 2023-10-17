@@ -1,12 +1,12 @@
 module.exports = {
     createRequiredFields: async function (table, requiredFields, model) {
-        if (! table) {
-            throw new Error(`Cannot check fields without a selected table.`);
-        }
-
         if (!requiredFields) {
             console.log("No required fields for this action.");
             return;
+        }
+
+        if (! table) {
+            throw new Error(`Cannot check fields without a selected table.`);
         }
 
         for (let fieldName of requiredFields) {

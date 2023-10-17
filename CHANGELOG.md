@@ -1,5 +1,11 @@
 # Changelog
 
+# 2.0.2 - 2023-10-17
+
+__Fixes:__
+
+* createRequiredFields(): only check table if there are fields to check.
+
 # 2.0.1 - 2023-09-28
 
 __Fixes:__
