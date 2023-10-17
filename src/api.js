@@ -97,10 +97,7 @@ class HcatApi {
         this.app = app;
 
         const expiry = this.localStorage.getItem(app + "Expiry");
-        
-        if (expiry) {
-            this.expiry = new Date(expiry);
-        }
+        this.expiry = (expiry) ? new Date(expiry) : null;
     }
 
     setTokens(app, tokens) {
