@@ -1,5 +1,13 @@
 # Changelog
 
+# 2.0.2 - 2023-10-17
+
+__Fixes:__
+
+* createRequiredFields(): only check table if there are fields to check.
+* Add setter to update server to allow for dev, stage, and prod
+* Set expiry as null if no date is found (rather than undefined).
+
 # 2.0.1 - 2023-09-28
 
 __Fixes:__

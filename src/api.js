@@ -37,6 +37,10 @@ class HcatApi {
         return this._server;
     }
 
+    set server(server) {
+        this._server = server;
+    }
+
     getUser(app) {
         let user = this.localStorage.getItem(`${app}User`);
         return user ?? "Not logged in yet.";
@@ -93,10 +97,7 @@ class HcatApi {
         this.app = app;
 
         const expiry = this.localStorage.getItem(app + "Expiry");
-        
-        if (expiry) {
-            this.expiry = new Date(expiry);
-        }
+        this.expiry = (expiry) ? new Date(expiry) : null;
     }
 
     setTokens(app, tokens) {
