@@ -1,5 +1,11 @@
 # Changelog
 
+# 2.0.3
+
+__Refactor:__
+
+* Update page templates
+
 # 2.0.2 - 2023-10-17
 
 __Fixes:__
