@@ -157,7 +157,7 @@ class HcatApi {
 
         let options = {
             method: method,
-            cors: true,
+            // cors: true,
             headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': this.#apiKey,
@@ -166,17 +166,27 @@ class HcatApi {
         }
 
         if ((method === "POST" || method === "PUT" || method === "PATCH") && payload) {
-            options.body = JSON.stringify(payload);
+            if (payload instanceof FormData) {
+                console.log("Adding form data directly");
+                options.body = payload;
+                options.headers['Content-Type'] = 'multipart/form-data';
+            } else if (payload.relativePath !== undefined) {
+                console.log("TEST FORCE CODE");
+                options.body = payload;
+            } else {
+                options.body = JSON.stringify(payload);
+            }
         }
 
         // Format query params, adds "" if none
+        console.log(endpoint);
         let url = new URL(`${this.server}${endpoint}?${new URLSearchParams(queryParams)}`);
-
+        
+        let request = new Request(url, options);
+        
         if (fullUrl) {
-            url = fullUrl;
+            request = new Request(fullUrl);
         }
-
-        const request = new Request(url, options);
 
         return new Promise((resolve, reject) => {
             fetch(request)
