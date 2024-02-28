@@ -1,10 +1,11 @@
 # Changelog
 
-# 2.0.3
+# 2.0.3 - 2024-02-28
 
 __Refactor:__
 
 * Update page templates
+* Handle more request types
 
 # 2.0.2 - 2023-10-17
 
