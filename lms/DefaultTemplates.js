@@ -1,15 +1,21 @@
 module.exports = {
-	SYLLABUS: '01_Syllabus.hbs',
-	SYLLABUS_V2: '01_Syllabus-v2.hbs',
-	COURSE_OVERVIEW: '02_Course_Overview-OD.hbs',
-	MEET_INSTRUCTOR: '03_Meet_Course_Director-OD.hbs',
-	PASSWORD_CHANGE: '04_Password_Change.hbs',
-	VIDEO: '05_Video_Lecture-OD.hbs',
-	VIGNETTE_VIDEO: '05_Video_Lecture-Vignette.hbs',
-	INTRO_VIDEO: '05_Video_Lecture-Intro.hbs',
-	ACTIVITY_VIDEO: '05_Video_Lecture-Activity.hbs',
-	INTERACTIVE_TRANSCRIPTS: '06_How_to_transcripts.hbs',
-	COURSE_CONCLUSION: '08_Course_Conclusion-OD.hbs',
-	SECTION_OVERVIEW: '02_Section_Overview-OD.hbs',
-	BLANK_PAGE: '09_Blank_page.hbs',
+	// Syllabus
+	SYLLABUS: 'Syllabus.hbs',
+	// Course
+	COURSE_INTRODUCTION: 'Course_Overview.hbs',
+	COURSE_CONCLUSION: 'Course_Conclusion.hbs',
+	UNIT_OVERVIEW: 'Course_UnitOverview.hbs',
+	MEET_PEOPLE: 'Course_MeetPeople.hbs',
+	UNIT_VIDEO: 'Course_UnitVideo.hbs',
+	// UNIT_CONCLUSION: 'Course_UnitConclusion.hbs',
+	UNIT_MILESTONE: 'Course_UnitMilestone.hbs',
+	// Videos
+	VIDEO: 'Video_Lecture.hbs',
+	VIGNETTE_VIDEO: 'Video_Vignette.hbs',
+	// Misc
+	BLANK_PAGE: 'Misc_BlankPage.hbs',
+	// Documentation
+	INTERACTIVE_TRANSCRIPTS: 'Docs_InteractiveTranscripts.hbs',
+	PASSWORD_CHANGE: 'Docs_ChangePassword.hbs',
+	NAV_BASICS: 'Docs_NavigationBasics.hbs',
 };
