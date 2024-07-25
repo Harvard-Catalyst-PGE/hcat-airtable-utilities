@@ -12,8 +12,8 @@ class HcatApi {
     #refreshToken;
     #refreshTokenIv;
 
-    constructor(server, baseIds, localStorage = null) {
-        this._server = server;
+    constructor(baseIds, localStorage = null) {
+        this._server = null;
         
         this.#apiUser = "";
         this.#apiKey = null;
