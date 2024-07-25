@@ -52,9 +52,25 @@ class D2LApi {
         return response;
     }
 
-    async getAvailableAwards(orgUnitId) {
+    async getAvailableAwards({orgUnitId: orgUnitId} = {}) {
+        console.log(`getAvailableAwards for ${orgUnitId}`);
+        if (!orgUnitId) {
+            return false;
+        }
+
         let endpoint = `${this.endpoint}/${orgUnitId}/associations`;
-        return this.hcat.fetchWrapper({endpoint: endpoint});
+        const response = await this.hcat.fetchWrapper({endpoint: endpoint});
+
+        if (response) {
+            let localOptions = response.map(result => ({
+                value: result.Award.AwardId,
+                label: `${result.Award.Title} (Type ${result.Award.AwardType}-Id ${result.Award.AwardId})`,
+            }));
+    
+            return {localOptions: localOptions, rawValues: response};
+        }
+
+        return {localOptions: [], rawValues: []};
     }
 
     async issueAward(orgUnitId, payload) {
@@ -98,7 +114,7 @@ class D2LApi {
     /*--------------------------------------------------------------
     # COURSE
     --------------------------------------------------------------*/
-    async getCourseListing({orgUnitId=null, queryParams = {}}) {
+    async getCourseListing({orgUnitId=null, queryParams={}} = {}) {
         let endpoint = `${this.endpoint}/orgstructure/`;
 
         // Request specific course if ID provided        
@@ -106,7 +122,20 @@ class D2LApi {
             endpoint += orgUnitId;
         }
 
-        return this.hcat.fetchWrapper({endpoint: endpoint, queryParams: queryParams});
+        const response = await this.hcat.fetchWrapper({endpoint: endpoint, queryParams: queryParams});
+
+        if (response) {
+            response.sort((a, b) => a.Name.localeCompare(b.Name));
+
+            let localOptions = response.map(result => ({
+                value: result.Identifier,
+                label: `${result.Name} (${result.Identifier}-${result.Code})`,
+            }));
+    
+            return {localOptions: localOptions, rawValues: response};
+        }
+        
+        return {localOptions: [], rawValues: []};
     }
 
     /**
@@ -172,7 +201,7 @@ class D2LApi {
         return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
     }
 
-    async getOrgInfo(orgUnitId, target) {
+    async getOrgInfo({orgUnitId=6606, target=""} = {}) {
         let endpoint = `${this.endpoint}/${orgUnitId}/${target}`;
         return this.hcat.fetchWrapper({endpoint: endpoint});
     }
@@ -180,6 +209,14 @@ class D2LApi {
     /*--------------------------------------------------------------
     # USERS
     --------------------------------------------------------------*/
+    async importUsers(classlist=true) {
+        if (classlist) {
+            return this.getOrgInfo({target: "classlist"});
+        } else {
+            return this.fetchUser({});
+        }
+    }
+    
     async createUser(payload) {
         let endpoint = `${this.endpoint}/users`;
         return this.hcat.fetchWrapper({method: "POST", endpoint: endpoint, payload: payload});
@@ -188,6 +225,11 @@ class D2LApi {
     async fetchUser(queryParams) {
         let endpoint = `${this.endpoint}/users`;
         return this.hcat.fetchWrapper({endpoint: endpoint, queryParams: queryParams});
+    }
+
+    async updateUser(userId, payload) {
+        let endpoint = `${this.endpoint}/users/${userId}`;
+        return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
     }
 
     async modifyUserEnrollment(action, orgUnitId, user) {
@@ -201,6 +243,13 @@ class D2LApi {
 
     async updatePreferredNames(userId, payload) {
         let endpoint = `${this.endpoint}/users/${userId}/names`;
+        return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
+    }
+
+    async updateUserActivation(user, active=true) {
+        let endpoint = `${this.endpoint}/users/${user.fields.Identifier}/activation`;
+        let payload = user.toCreateUserData(active);
+    
         return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
     }
 
