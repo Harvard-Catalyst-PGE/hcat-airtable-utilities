@@ -1,4 +1,6 @@
+const AirtableApi = require('./airtable');
 const D2LApi = require('./d2l');
+const VideoApi = require('./video');
 const checkFetchStatus = require('../helpers').checkFetchStatus;
 const parseResponse = require('../helpers').parseResponse;
 const EXPIRY = 1000 * 60 * 60;  // Hour expiry time
@@ -10,8 +12,8 @@ class HcatApi {
     #refreshToken;
     #refreshTokenIv;
 
-    constructor(server, baseIds, localStorage = null) {
-        this._server = server;
+    constructor(baseIds, localStorage = null) {
+        this._server = null;
         
         this.#apiUser = "";
         this.#apiKey = null;
@@ -22,7 +24,9 @@ class HcatApi {
         this.app = "";
         this.localStorage = localStorage;
 
-        this.d2l = new D2LApi(this);
+        this.airtable = new AirtableApi(this);
+        this.lms = new D2LApi(this);
+        this.video = new VideoApi(this);
 
         // Base IDs for Airtable routes
         this._directory = baseIds.directory ?? null;
