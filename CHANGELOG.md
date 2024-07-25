@@ -1,5 +1,13 @@
 # Changelog
 
+# 2.0.4 - 2024-07-25
+
+__Refactor:__
+
+* Update page templates
+* Update 'batchProcess' to handle Airtable permissions differently.
+* Add/update API routes.
+
 # 2.0.3 - 2024-02-28
 
 __Refactor:__
