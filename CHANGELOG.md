@@ -1,5 +1,11 @@
 # Changelog
 
+# 2.0.5 - 2024-08-13
+
+__Features:__
+
+* Add new page templates for activities
+
 # 2.0.4 - 2024-07-25
 
 __Refactor:__
