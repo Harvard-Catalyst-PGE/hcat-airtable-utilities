@@ -2,7 +2,7 @@ module.exports = {
 	// Syllabus
 	SYLLABUS: 'Syllabus.hbs',
 	// Course
-	COURSE_INTRODUCTION: 'Course_Overview.hbs',
+	COURSE_OVERVIEW: 'Course_Overview.hbs',
 	COURSE_CONCLUSION: 'Course_Conclusion.hbs',
 	UNIT_OVERVIEW: 'Course_UnitOverview.hbs',
 	MEET_PEOPLE: 'Course_MeetPeople.hbs',
@@ -12,6 +12,12 @@ module.exports = {
 	// Videos
 	VIDEO: 'Video_Lecture.hbs',
 	VIGNETTE_VIDEO: 'Video_Vignette.hbs',
+	// Activities
+	ACTIVITY_HOTSPOT: 'Activity_Hotspot.hbs',
+	ACTIVITY_TEXT_HOTSPOT: 'Activity_TextHotspot.hbs',
+	ACTIVITY_DIAGNOSTIC: 'Activity_Diagnostic.hbs',
+	ACTIVITY_FLIP_CARDS: 'Activity_FlipCards.hbs',
+	ACTIVITY_PROMPT_COMPILER: 'Activity_PromptCompiler.hbs',
 	// Misc
 	BLANK_PAGE: 'Misc_BlankPage.hbs',
 	// Documentation
