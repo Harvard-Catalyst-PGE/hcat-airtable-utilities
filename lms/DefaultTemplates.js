@@ -23,5 +23,6 @@ module.exports = {
 	// Documentation
 	INTERACTIVE_TRANSCRIPTS: 'Docs_InteractiveTranscripts.hbs',
 	PASSWORD_CHANGE: 'Docs_ChangePassword.hbs',
+	NOTETAKING: 'Docs_Notetaking.hbs',
 	NAV_BASICS: 'Docs_NavigationBasics.hbs',
 };

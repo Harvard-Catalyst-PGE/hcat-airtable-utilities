@@ -1,5 +1,11 @@
 # Changelog
 
+# 2.0.6 - 2024-08-14
+
+__Features:__
+
+* Add new page templates for documentation
+
 # 2.0.5 - 2024-08-13
 
 __Features:__
