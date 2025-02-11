@@ -14,10 +14,16 @@
  *          - createContent()
  *          - createDiscussionTopic()
  *          - updateTopic()
+ *          - uploadFile()
  *      Course:
  *          - getCourseListing()
  *          - getImportCourseJobStatus()
  *          - importCourse()
+ *      Data:
+ *          - fetchDataSets()
+ *          - getDataSets()
+ *          - getSpecificDataSet()
+ *          - downloadDataSet()
  *      Misc:
  *          - whoAmI()
  *      OrgUnit:
@@ -111,6 +117,10 @@ class D2LApi {
         return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
     }
 
+    async uploadFile(org, attachment, path) {
+        let endpoint = `${this.endpoint}/${org.OrgUnitProperties.Identifier}/managefiles/file/upload`;
+        return this.hcat.fetchWrapper({method: 'POST', endpoint: endpoint, payload: attachment});
+    }
     /*--------------------------------------------------------------
     # COURSE
     --------------------------------------------------------------*/
@@ -181,6 +191,126 @@ class D2LApi {
         return this.hcat.fetchWrapper({method: "POST", endpoint: endpoint, payload: payload});
     }
 
+    /*--------------------------------------------------------------
+    # DATA
+    --------------------------------------------------------------*/
+    async fetchDataSets({schemaId: schemaId = null} = {}) {
+        let endpoint = `${this.endpoint}/datasets/`;
+
+        if (schemaId) {
+            endpoint += schemaId;
+        }
+        const response = await this.hcat.fetchWrapper({endpoint: endpoint});
+
+        return response;
+    }
+    
+    async getDataSets({schemaId: schemaId = null} = {}) {
+        console.log("Getting datasets");
+        const DATASETS_TO_IGNORE = [
+            "Activity",
+            "Attendance",
+            "Audio Video",
+            "Calendar Events",
+            "Checklist",
+            "Condition",    // PreRequisites, Release Conditions
+            "Course Publisher",
+            "Creator",
+            "Gradebook",
+            "Grade Scheme",
+            "JIT",
+            "LTI",
+            "Media",
+            "Outcomes",
+            "Portfolio",
+            "Role Details",
+            "Rubric",
+            "SCORM",
+            "Tools",
+            "TurnItIn",
+            "User Attribute",
+        ]
+        // let endpoint = `${this.endpoint}/datasets/`;
+
+        // if (schemaId) {
+        //     endpoint += schemaId;
+        // }
+        // const response = await this.hcat.fetchWrapper({endpoint: endpoint});
+
+        const response = await this.fetchDataSets();
+        
+        if (response) {
+            response.sort((a, b) => a.Full.Name.localeCompare(b.Full.Name));
+            
+            let localOptions = response.map(result => {
+                return {
+                    value: result.SchemaId,
+                    label: `${result.Full.Name}`,
+                }
+            });
+
+            localOptions = localOptions.filter((item) => {
+                // console.log(item.label);
+                for (let toIgnore of DATASETS_TO_IGNORE) {
+                    if (item.label.includes(toIgnore)) {
+                        // console.log(`Excluding ${item.label}`);
+                        return;
+                    }
+                }
+                
+                return item;
+            })
+            
+    
+            console.log(localOptions);
+            return {localOptions: localOptions, rawValues: response};
+        }
+        
+        return {localOptions: [], rawValues: []};
+    }
+
+    async getSpecificDataSet({schemaId: schemaId, getFull: getFull = true} = {}) {
+        if (!schemaId) {
+            return false;
+        }
+
+        // return await this.getDataSets({schemaId: schemaId})
+        const response = await this.fetchDataSets({schemaId: schemaId});
+
+        if (response) {
+            if (getFull) {
+                // Only return the Full dataset - current workflow
+                // return response.find(item => item.BdsType === "Full");
+                const full = response.find(item => item.BdsType === "Full");
+
+                const ExtractId = full.DownloadLink.split("extracts/")[1];
+                return {PluginId: full.PluginId, ExtractId: ExtractId};
+
+            } else {
+                // Get all plugins - Full and Differential - for displaying in UI
+                let localOptions = response.map(result => {
+                    return {
+                        value: result.PluginId,
+                        label: `${result.BdsType} - ${result.CreatedDate}`,
+                    }
+                });
+        
+                console.log(localOptions);
+                return {localOptions: localOptions, rawValues: response};
+            }
+        }
+        
+        return {localOptions: [], rawValues: []};
+    }
+
+    async downloadDataSet(schemaId, pluginId, extractId) {
+        if (!schemaId || !pluginId || !extractId) {
+            return false;
+        }
+
+        let endpoint = `${this.endpoint}/datasets/${schemaId}/${pluginId}/${extractId}`;
+        return await this.hcat.fetchWrapper({endpoint: endpoint});
+    }
     /*--------------------------------------------------------------
     # MISC
     --------------------------------------------------------------*/

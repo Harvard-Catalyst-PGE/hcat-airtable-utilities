@@ -1,5 +1,14 @@
 # Changelog
 
+# 2.1.0 - 2025-02-11
+
+__Features:__
+
+* Expansion of `batchProcess` to include progress tracking and automatic field creation
+* Handle 302 responses
+* Add endpoints for Brightspace Datasets
+* Add endpoints for Brightspace file handling
+
 # 2.0.6 - 2024-08-14
 
 __Features:__

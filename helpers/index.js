@@ -1,9 +1,8 @@
 module.exports = {
-    addChoicesToSelect: require('./addChoicesToSelect').addChoicesToSelect,
     batchProcess: require('./batchProcess').batchProcess,
     checkFetchStatus: require('./checkFetchStatus').checkFetchStatus,
     checkPermissions: require('./checkPermissions').checkPermissions,
-    createRequiredFields: require('./createRequiredFields').createRequiredFields,
+    createFields: require('./createFields').createFields,
     parseResponse: require('./parseResponse').parseResponse,
     setSettingValues: require('./setSettingValues').setSettingValues,
     settleAllPromises: require('./settleAllPromises').settleAllPromises,
