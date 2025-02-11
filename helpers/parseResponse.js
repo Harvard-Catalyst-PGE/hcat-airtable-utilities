@@ -2,7 +2,7 @@ module.exports = {
     parseResponse: async function (response, resolve, reject) {
         const contentType = response.headers.get("Content-Type");
 
-        if(!contentType) {
+        if(!contentType || response.status === 302) {
             // No ontent type specified; just return
             return resolve(response);
         } else if (contentType.includes("json")) {

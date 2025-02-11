@@ -5,6 +5,7 @@
 __Features:__
 
 * Expansion of `batchProcess` to include progress tracking and automatic field creation
+* Handle 302 responses
 
 # 2.0.6 - 2024-08-14
 

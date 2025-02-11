@@ -1,6 +1,6 @@
 module.exports = {
     checkFetchStatus: async function (res) {
-        if (res.ok || res.status === 308) {
+        if (res.ok || res.status === 302 || res.status === 308) {
             return res;
         } else {
             let message = res.statusText;
