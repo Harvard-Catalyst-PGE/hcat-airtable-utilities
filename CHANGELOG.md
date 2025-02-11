@@ -1,5 +1,11 @@
 # Changelog
 
+# 2.1.0 - 2025-02-11
+
+__Features:__
+
+* Expansion of `batchProcess` to include progress tracking and automatic field creation
+
 # 2.0.6 - 2024-08-14
 
 __Features:__
