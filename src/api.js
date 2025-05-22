@@ -183,7 +183,6 @@ class HcatApi {
         }
 
         // Format query params, adds "" if none
-        console.log(endpoint);
         let url = new URL(`${this.server}${endpoint}?${new URLSearchParams(queryParams)}`);
         
         let request = new Request(url, options);

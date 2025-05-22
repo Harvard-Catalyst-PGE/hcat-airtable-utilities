@@ -117,10 +117,11 @@ class D2LApi {
         return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
     }
 
-    async uploadFile(org, attachment, path) {
+    async uploadFile(org, attachment) {
         let endpoint = `${this.endpoint}/${org.OrgUnitProperties.Identifier}/managefiles/file/upload`;
         return this.hcat.fetchWrapper({method: 'POST', endpoint: endpoint, payload: attachment});
     }
+
     /*--------------------------------------------------------------
     # COURSE
     --------------------------------------------------------------*/

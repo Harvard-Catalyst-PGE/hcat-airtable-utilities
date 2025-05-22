@@ -4,4 +4,5 @@ module.exports = {
     OFFERING: 3,
     GROUP: 4, 
     SEMESTER: 5,
+    LEARNING_PATH: 7,
 }

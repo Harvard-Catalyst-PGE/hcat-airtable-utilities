@@ -1,5 +1,12 @@
 # Changelog
 
+# 2.1.1 - 2025-05-22
+
+__Fix:__
+
+* Revised `createFields()` to create all fields that exist, not just in the
+first sample record, which may be missing some info.
+
 # 2.1.0 - 2025-02-11
 
 __Features:__
