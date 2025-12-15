@@ -1,5 +1,11 @@
 # Changelog
 
+# 2.2.0 - 2025-12-15
+
+__Features:__
+
+* Update GitHub workflow to use new NPM trusted publishing.
+
 # 2.1.1 - 2025-05-22
 
 __Fix:__
