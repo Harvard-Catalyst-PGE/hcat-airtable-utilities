@@ -38,7 +38,6 @@
  */
 class D2LApi {
     constructor(hcat) {
-        this.endpoint = "/api/d2l";
         this.hcat = hcat;
     }
 
@@ -46,14 +45,14 @@ class D2LApi {
     # AWARDS
     --------------------------------------------------------------*/
     async createAward(payload) {
-        let endpoint = `${this.endpoint}/awards`;
+        let endpoint = `/awards`;
 
         let response = await this.hcat.fetchWrapper({method: "POST", endpoint: endpoint, payload: payload});
         return response;
     }
     
     async createAwardAssociation(orgUnitId, payload) {
-        let endpoint = `${this.endpoint}/${orgUnitId}/associations`;
+        let endpoint = `/${orgUnitId}/associations`;
         let response = await this.hcat.fetchWrapper({method: "POST", endpoint: endpoint, payload: payload});
         return response;
     }
@@ -64,7 +63,7 @@ class D2LApi {
             return false;
         }
 
-        let endpoint = `${this.endpoint}/${orgUnitId}/associations`;
+        let endpoint = `/${orgUnitId}/associations`;
         const response = await this.hcat.fetchWrapper({endpoint: endpoint});
 
         if (response) {
@@ -80,7 +79,7 @@ class D2LApi {
     }
 
     async issueAward(orgUnitId, payload) {
-        let endpoint = `${this.endpoint}/${orgUnitId}/issued`;
+        let endpoint = `/${orgUnitId}/issued`;
         return this.hcat.fetchWrapper({method: "POST", endpoint: endpoint, payload: payload});
     }
 
@@ -88,7 +87,7 @@ class D2LApi {
     # CONTENT
     --------------------------------------------------------------*/
     async getContent(orgUnitId, type, id, file=false) {
-        let endpoint = `${this.endpoint}/${orgUnitId}/${type}/${id}`;
+        let endpoint = `/${orgUnitId}/${type}/${id}`;
 
         if (file) {
             endpoint += "/file";
@@ -98,17 +97,17 @@ class D2LApi {
     }
 
     async createContent(payload) {
-        let endpoint = `${this.endpoint}/${payload.OrgUnitProperties.Identifier}/${payload.type}`;
+        let endpoint = `/${payload.OrgUnitProperties.Identifier}/${payload.type}`;
         return this.hcat.fetchWrapper({method: "POST", endpoint: endpoint, payload: payload});
     }
     
     async createDiscussionTopic(payload) {
-        let endpoint = `${this.endpoint}/${payload.OrgUnitProperties.Identifier}/discussions/${payload.parentModule.ForumId}/topics`;
+        let endpoint = `/${payload.OrgUnitProperties.Identifier}/discussions/${payload.parentModule.ForumId}/topics`;
         return this.hcat.fetchWrapper({method: "POST", endpoint: endpoint, payload: payload});
     }
     
     async updateTopic(payload, file=false) {
-        let endpoint = `${this.endpoint}/${payload.OrgUnitProperties.Identifier}/topics/${payload.Id}`;
+        let endpoint = `/${payload.OrgUnitProperties.Identifier}/topics/${payload.Id}`;
 
         if (file) {
             endpoint += "/file";
@@ -117,16 +116,16 @@ class D2LApi {
         return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
     }
 
-    async uploadFile(org, attachment) {
-        let endpoint = `${this.endpoint}/${org.OrgUnitProperties.Identifier}/managefiles/file/upload`;
-        return this.hcat.fetchWrapper({method: 'POST', endpoint: endpoint, payload: attachment});
+    async uploadFile(org, attachment, createIfMissing=true) {
+        let endpoint = `/${org.OrgUnitProperties.Identifier}/managefiles/file/upload`;
+        return this.hcat.fetchWrapper({method: 'POST', endpoint: endpoint, payload: attachment, queryParams: {createIfMissing}});
     }
 
     /*--------------------------------------------------------------
     # COURSE
     --------------------------------------------------------------*/
     async getCourseListing({orgUnitId=null, queryParams={}} = {}) {
-        let endpoint = `${this.endpoint}/orgstructure/`;
+        let endpoint = `/orgstructure/`;
 
         // Request specific course if ID provided        
         if (orgUnitId) {
@@ -164,7 +163,7 @@ class D2LApi {
      * @returns {String} The current status of the copy job.
      */
     async getImportCourseJobStatus(targetId, jobId) {
-        let endpoint = `${this.endpoint}/${targetId}/import/${jobId}`;
+        let endpoint = `/${targetId}/import/${jobId}`;
 
         let response = await this.hcat.fetchWrapper({endpoint: endpoint});
         return response.Status;
@@ -179,7 +178,7 @@ class D2LApi {
          * @return {Object} - JobToken id to use for checking status of job.
          */
     async importCourse(sourceId, targetId, offset = null) {
-        let endpoint = `${this.endpoint}/${targetId}/import`;
+        let endpoint = `/${targetId}/import`;
 
         // Construct payload with Source Course Id
         const payload = {
@@ -193,10 +192,46 @@ class D2LApi {
     }
 
     /*--------------------------------------------------------------
+    # INTELLIGENT AGENTS
+    --------------------------------------------------------------*/
+    async getAgentListing(orgUnitId) {
+        let endpoint = `/${orgUnitId}/agents`;
+        let response = await this.hcat.fetchWrapper({endpoint});
+        
+        if (response) {
+            response.sort((a, b) => a.Name.localeCompare(b.Name));
+
+            let localOptions = response.map(result => {
+                result.checked = false;
+                  
+                return {
+                    value: result.AgentId,
+                    label: `${result.Name} (${result.AgentId})`,
+                }
+            });
+    
+            return {localOptions: localOptions, rawValues: response};
+        }
+        
+        return {localOptions: [], rawValues: []};
+
+    }
+
+    async createAgent(orgUnitId, payload) {
+        let endpoint = `/${orgUnitId}/agents`;
+        return await this.hcat.fetchWrapper({method: 'POST', endpoint, payload});
+    }
+    
+    async updateAgent(orgUnitId, agentId, payload) {
+        let endpoint = `/${orgUnitId}/agents/${agentId}`;
+        return await this.hcat.fetchWrapper({method: 'PUT', endpoint, payload});
+    }
+
+    /*--------------------------------------------------------------
     # DATA
     --------------------------------------------------------------*/
     async fetchDataSets({schemaId: schemaId = null} = {}) {
-        let endpoint = `${this.endpoint}/datasets/`;
+        let endpoint = `/datasets/`;
 
         if (schemaId) {
             endpoint += schemaId;
@@ -207,7 +242,6 @@ class D2LApi {
     }
     
     async getDataSets({schemaId: schemaId = null} = {}) {
-        console.log("Getting datasets");
         const DATASETS_TO_IGNORE = [
             "Activity",
             "Attendance",
@@ -231,7 +265,7 @@ class D2LApi {
             "TurnItIn",
             "User Attribute",
         ]
-        // let endpoint = `${this.endpoint}/datasets/`;
+        // let endpoint = `/datasets/`;
 
         // if (schemaId) {
         //     endpoint += schemaId;
@@ -309,14 +343,14 @@ class D2LApi {
             return false;
         }
 
-        let endpoint = `${this.endpoint}/datasets/${schemaId}/${pluginId}/${extractId}`;
+        let endpoint = `/datasets/${schemaId}/${pluginId}/${extractId}`;
         return await this.hcat.fetchWrapper({endpoint: endpoint});
     }
     /*--------------------------------------------------------------
     # MISC
     --------------------------------------------------------------*/
     async whoAmI() {
-        let endpoint = `${this.endpoint}/users/whoami`;
+        let endpoint = `/users/whoami`;
         return this.hcat.fetchWrapper({endpoint: endpoint});
     }
     
@@ -324,7 +358,7 @@ class D2LApi {
     # ORG UNIT
     --------------------------------------------------------------*/
     async addReleaseCondition(orgUnitId, type, typeId, conditionType) {
-        let endpoint = `${this.endpoint}/${orgUnitId}/conditionalRelease/${type}/${typeId}`;
+        let endpoint = `/${orgUnitId}/conditionalRelease/${type}/${typeId}`;
         const payload = {
             "Operator": "All",
             "Type": conditionType,
@@ -333,7 +367,7 @@ class D2LApi {
     }
 
     async getOrgInfo({orgUnitId=6606, target=""} = {}) {
-        let endpoint = `${this.endpoint}/${orgUnitId}/${target}`;
+        let endpoint = `/${orgUnitId}/${target}`;
         return this.hcat.fetchWrapper({endpoint: endpoint});
     }
     
@@ -349,22 +383,22 @@ class D2LApi {
     }
     
     async createUser(payload) {
-        let endpoint = `${this.endpoint}/users`;
+        let endpoint = `/users`;
         return this.hcat.fetchWrapper({method: "POST", endpoint: endpoint, payload: payload});
     }
 
     async fetchUser(queryParams) {
-        let endpoint = `${this.endpoint}/users`;
+        let endpoint = `/users`;
         return this.hcat.fetchWrapper({endpoint: endpoint, queryParams: queryParams});
     }
 
     async updateUser(userId, payload) {
-        let endpoint = `${this.endpoint}/users/${userId}`;
+        let endpoint = `/users/${userId}`;
         return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
     }
 
     async modifyUserEnrollment(action, orgUnitId, user) {
-        let endpoint = `${this.endpoint}/${orgUnitId}/enroll/${user.fields.Identifier}`;
+        let endpoint = `/${orgUnitId}/enroll/${user.fields.Identifier}`;
 
         const method = (action === "enroll") ? "POST" : "DELETE";
         const payload = (action === "enroll") ? {"RoleId": user.fields.RoleId} : null;
@@ -373,19 +407,19 @@ class D2LApi {
     }
 
     async updatePreferredNames(userId, payload) {
-        let endpoint = `${this.endpoint}/users/${userId}/names`;
+        let endpoint = `/users/${userId}/names`;
         return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
     }
 
     async updateUserActivation(user, active=true) {
-        let endpoint = `${this.endpoint}/users/${user.fields.Identifier}/activation`;
+        let endpoint = `/users/${user.fields.Identifier}/activation`;
         let payload = user.toCreateUserData(active);
     
         return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
     }
 
     async updateUserPassword(userId, password) {
-        let endpoint = `${this.endpoint}/users/${userId}/password`;
+        let endpoint = `/users/${userId}/password`;
         let payload = {"Password": password}
 
         return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});

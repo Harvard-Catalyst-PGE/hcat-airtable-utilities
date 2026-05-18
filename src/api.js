@@ -1,37 +1,43 @@
 const AirtableApi = require('./airtable');
 const D2LApi = require('./d2l');
 const VideoApi = require('./video');
+const CourseMerchantApi = require('./courseMerchant');
 const checkFetchStatus = require('../helpers').checkFetchStatus;
 const parseResponse = require('../helpers').parseResponse;
 const EXPIRY = 1000 * 60 * 60;  // Hour expiry time
 
 class HcatApi {
-    #apiUser;
-    #apiKey;
-    #apiKeyIv;
-    #refreshToken;
-    #refreshTokenIv;
-
-    constructor(baseIds, localStorage = null) {
+    constructor(localStorage = null) {
         this._server = null;
-        
-        this.#apiUser = "";
-        this.#apiKey = null;
-        this.#apiKeyIv = null;
-        this.#refreshToken = null;
-        this.#refreshTokenIv = null;
-
-        this.app = "";
         this.localStorage = localStorage;
+        
+        this.airtable = new AirtableApi(this.forApp("airtable"));
+        this.lms = new D2LApi(this.forApp("lms", "d2l"));
+        this.video = new VideoApi(this.forApp("video", "videos"));
+        this.courseMerchant = new CourseMerchantApi(this.forApp("courseMerchant"));
+        this.courseMerchantCRM = new CourseMerchantApi(this.forApp("courseMerchantCRM"));
+    }
 
-        this.airtable = new AirtableApi(this);
-        this.lms = new D2LApi(this);
-        this.video = new VideoApi(this);
+    forApp(app, endpointBase = null) {
+        const parent = this;
+        return {
+            app,
+            endpoint: `/foobar/api/${endpointBase ?? app}`,
+            fetchWrapper: (options = {}) => {
+                let endpoint = `/api/${endpointBase ?? app}`;
 
-        // Base IDs for Airtable routes
-        this._directory = baseIds.directory ?? null;
-        this._budget = baseIds.budget ?? null;
-        this._workplan = baseIds.workplan ?? null;
+                if (options.endpoint) {
+                    endpoint += options.endpoint;
+                }
+
+                return parent.fetchWrapper({...options, endpoint, app})
+            },
+            exchangeTokens: () => parent.exchangeTokens(app),
+            getUser: () => parent.getUser(app),
+            clearTokens: () => parent.clearTokens(app),
+            setTokens: (tokens) => parent.setTokens(app, tokens),
+            validateApiKey: () => parent.validateApiKey(app),
+        }
     }
 
     /**
@@ -46,102 +52,90 @@ class HcatApi {
     }
 
     getUser(app) {
-        let user = this.localStorage.getItem(`${app}User`);
+        let user = this.localStorage?.getItem(`${app}User`);
         return user ?? "Not logged in yet.";
     }
 
-    /**
-     * @param {string} token
-     */
-    set apiKey(token) {
-        this.#apiKey = token;
-    }
-
-    set apiKeyIv(iv) {
-        this.#apiKeyIv = iv;
-    }
-    
-    set refreshToken(token) {
-        this.#refreshToken = token;
-    }
-
-    set refreshTokenIv(iv) {
-        this.#refreshTokenIv = iv;
-    }
-
-    set apiUser(user) {
-        let app = (user.UniqueName) ? "lms" : "airtable";
+    formatApiUser(user) {
         let name = user.FirstName + " " + user.LastName;
 
-        this.#apiUser = `${name} (${user.Identifier})`;
-        this.localStorage.setItem(`${app}User`, this.#apiUser);
+        const userDisplay = `${name} (${user.Identifier})`;
+        this.localStorage.setItem(`${user.app}User`, userDisplay);
+        return userDisplay;
     }
 
-    get directory() {
-        return this._directory;
+    validateApiKey(app) {
+        return this.localStorage?.getItem(app) !== null;
     }
 
-    get budget() {
-        return this._budget;
-    }
-
-    get workplan() {
-        return this._workplan;
-    }
-
-    validateApiKey() {
-        return this.#apiKey !== null;
-    }
-
-    getTokens(app) {
-        this.#apiKey = this.localStorage.getItem(app);
-        this.#apiKeyIv = this.localStorage.getItem(app + "Iv");
-        this.#refreshToken = this.localStorage.getItem(app + "Refresh");
-        this.#refreshTokenIv = this.localStorage.getItem(app + "RefreshIv");
-        this.app = app;
-
+    getAppTokens(app) {
         const expiry = this.localStorage.getItem(app + "Expiry");
-        this.expiry = (expiry) ? new Date(expiry) : null;
+
+        return {
+            app,
+            apiKey: this.localStorage.getItem(app),
+            apiKeyIv: this.localStorage.getItem(app + "Iv"),
+            tag: this.localStorage.getItem(app + "Tag"),
+            refreshToken: this.localStorage.getItem(app + "Refresh"),
+            refreshTokenIv: this.localStorage.getItem(app + "RefreshIv"),
+            refreshTokenTag: this.localStorage.getItem(app + "RefreshTag"),
+            expiry: expiry ? new Date(expiry) : null,
+        }
+    }
+
+    clearTokens(app) {
+        Object.keys(this.localStorage).forEach((key) => {
+            if (key.startsWith(app)) {
+                this.localStorage.removeItem(key);
+            }
+        });
     }
 
     setTokens(app, tokens) {
-        const now = new Date();
         const expiry = new Date();
-        expiry.setTime(now.getTime() + EXPIRY);
+        expiry.setTime(new Date().getTime() + EXPIRY);
 
-        // Set in memory
-        this.#apiKey = tokens.authToken.encryptedValue;
-        this.#apiKeyIv = tokens.authToken.iv;
-        this.#refreshToken = tokens.refreshToken.encryptedValue;
-        this.#refreshTokenIv = tokens.refreshToken.iv;
-        this.expiry = expiry;
-        this.app = app;
+        if (!tokens.authToken?.encryptedValue || !tokens.authToken.iv || !tokens.authToken.tag) {
+            throw new Error("Invalid auth payload - missing auth token");
+        }
         
         // Set in local storage
         this.localStorage.setItem(app, tokens.authToken.encryptedValue);
         this.localStorage.setItem(app + "Iv", tokens.authToken.iv);
-        this.localStorage.setItem(app + "Refresh", tokens.refreshToken.encryptedValue);
-        this.localStorage.setItem(app + "RefreshIv", tokens.refreshToken.iv);
         this.localStorage.setItem(app + "Expiry", expiry);
+        this.localStorage.setItem(app + "Tag", tokens.authToken.tag);
+
+        if (tokens.refreshToken) {
+            this.localStorage.setItem(app + "Refresh", tokens.refreshToken?.encryptedValue);
+            this.localStorage.setItem(app + "RefreshIv", tokens.refreshToken?.iv);
+            this.localStorage.setItem(app + "RefreshTag", tokens.refreshToken?.tag);
+        }
     }
 
-    async exchangeTokens() {
-        console.log(`Refreshing ${this.app} tokens`);
+    async exchangeTokens(app) {
+        console.log(`Refreshing ${app} tokens`);
+        if (app === "courseMerchant") {
+            throw new Error("Course Merchant session expired. Please login again.");
+        }
+        const tokens = this.getAppTokens(app);
 
         const payload = {
-            refreshToken: this.#refreshToken,
-            refreshTokenIv: this.#refreshTokenIv,
+            refreshToken: tokens.refreshToken,
+            refreshTokenIv: tokens.refreshTokenIv,
+            refreshTokenTag: tokens.refreshTokenTag,
         }
 
-        this.expiry = null;
-        let response = await this.fetchWrapper({
+        const response = await this.fetchWrapper({
+            app,
             method: 'POST',
             endpoint: `/auth/callback`,
             payload: payload,
-            queryParams: {platform: this.app}
+            queryParams: {platform: (app === "lms") ? "d2l" : app},
+            skipRefresh: true,
         });
-        this.setTokens(this.app, response);
-        return;
+
+        this.setTokens(app, response);
+        return this.getAppTokens(app);
     }
 
     /**
@@ -152,11 +146,16 @@ class HcatApi {
      * @param {Object} queryParams - options parameter for `fetch` call
      * @returns {Promise<Object>} - server response or error
      */
-     async fetchWrapper({method = "GET", endpoint = '', payload = null, queryParams = {}, fullUrl = null} = {}) {
-        const now = new Date();
+     async fetchWrapper({app, method = "GET", endpoint = '', payload = null, queryParams = {}, fullUrl = null, skipRefresh = false} = {}) {
+        if (!app) {
+            throw new Error("fetchWrapper requires an app");
+        }
 
-        if (this.expiry && this.expiry <= now) {
-            await this.exchangeTokens();
+        const now = new Date();
+        let tokens = this.getAppTokens(app);
+
+        if (!skipRefresh && tokens.expiry && tokens.expiry <= now) {
+            tokens = await this.exchangeTokens(app);
         }
 
         let options = {
@@ -164,18 +163,17 @@ class HcatApi {
             // cors: true,
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': this.#apiKey,
-                'x-api-iv': this.#apiKeyIv,
+                'x-api-key': tokens.apiKey,
+                'x-api-iv': tokens.apiKeyIv,
+                'x-api-tag': tokens.tag,
             }
         }
 
         if ((method === "POST" || method === "PUT" || method === "PATCH") && payload) {
             if (payload instanceof FormData) {
-                console.log("Adding form data directly");
                 options.body = payload;
                 options.headers['Content-Type'] = 'multipart/form-data';
             } else if (payload.relativePath !== undefined) {
-                console.log("TEST FORCE CODE");
                 options.body = payload;
             } else {
                 options.body = JSON.stringify(payload);
@@ -183,26 +181,11 @@ class HcatApi {
         }
 
         // Format query params, adds "" if none
-        let url = new URL(`${this.server}${endpoint}?${new URLSearchParams(queryParams)}`);
-        
-        let request = new Request(url, options);
-        
-        if (fullUrl) {
-            request = new Request(fullUrl);
-        }
-
-        return new Promise((resolve, reject) => {
-            fetch(request)
-                .then(async (res) => {
-                    return await checkFetchStatus(res);
-                })
-                .then(async (res) => {
-                    return parseResponse(res, resolve, reject);
-                })
-                .catch(err => {
-                    return reject(err);
-                });
-        });
+        const url = fullUrl ?? new URL(`${this.server}${endpoint}?${new URLSearchParams(queryParams)}`);
+        const request = new Request(url, options);
+        const res = await fetch(request);
+        const checked = await checkFetchStatus(res);
+        return await parseResponse(checked);
     }
 };
 

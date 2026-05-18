@@ -26,7 +26,13 @@ module.exports = {
         }
 
         if ((operation === "create" || operation === "update") && records.length > 0) {
-            await createFields(table, records);
+            console.log("Creating fields...");
+            try {
+                await createFields(table, records);
+            } catch (e) {
+                console.error("Create fields problem");
+                console.error(e);
+            }
         }
 
         while(records.length > 0) {

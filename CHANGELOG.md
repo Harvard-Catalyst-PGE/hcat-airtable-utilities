@@ -1,5 +1,17 @@
 # Changelog
 
+# 3.0.0 - 2026-05-18
+
+__Features:__
+
+* Change parseResponse() to optionally return metadata for better downstream handling.
+* Improve error handling/reporting of createFields to succeed in more cases.
+* Change HcatApi class to use per-request auth to better handle requests to more than
+one service in a single app.
+* Improve security by passing these tokens in at runtime, rather than updating state.
+* Improve security by requiring a 'tag' for auth tokens to ensure integrity of tokens.
+
+
 # 2.2.0 - 2025-12-15
 
 __Features:__

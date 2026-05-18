@@ -48,7 +48,8 @@ function fieldFactory(fieldName, fieldValue, table, records) {
         } else if (fieldValue[0] && Object.hasOwn(fieldValue[0], "id") && fieldValue[0].id.startsWith("usr")) {
             return ["multipleCollaborators"];
         } else if (fieldValue[0] && Object.hasOwn(fieldValue[0], "id")) {
-            throw new Error("Creating Multiple Record Links field currently not supported.");
+            console.warn("Creating Multiple Record Links field currently not supported. This operation may fail.");
+            return;
             // return ["multipleRecordLinks", {"linkedTableId": "todo"}];
         } else {
             let options = getSelectOptions(table, records, fieldName);

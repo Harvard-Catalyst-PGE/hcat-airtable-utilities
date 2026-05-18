@@ -8,7 +8,6 @@
  */
 class VideoApi {
     constructor(hcat) {
-        // this.endpoint = "/api/d2l";
         this.hcat = hcat;
     }
 
