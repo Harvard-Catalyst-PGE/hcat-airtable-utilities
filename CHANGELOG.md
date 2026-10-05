@@ -1,5 +1,24 @@
 # Changelog
 
+# 3.1.0 - 2026-10-05
+
+__Features:__
+
+* Add `mergeOrders()` helper to combine Course Merchant and CRM orders on
+`OrderId`.
+* Add Course Merchant endpoints: `changeOrderStatus()`, `getProducts()`,
+`getProduct()`, and `createOrUpdateProduct()`.
+* Add Brightspace course endpoints: `getCourseInfo()` and `updateCourseInfo()`.
+* Add Brightspace config variable endpoints: `getConfigVar()` and `setConfigVar()`.
+* Add `downloadCachedDataSet()` to load a dataset extract from the server's
+cache.
+* Add Brightspace release condition endpoints.
+
+__Refactor:__
+
+* Update the `checkout` and `setup-node` GitHub Actions to v6.
+
+
 # 3.0.0 - 2026-05-18
 
 __Features:__
