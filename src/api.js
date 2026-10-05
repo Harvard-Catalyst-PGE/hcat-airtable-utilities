@@ -161,7 +161,11 @@ class HcatApi {
         let options = {
             method: method,
             // cors: true,
-            headers: {
+        }
+
+        // Only include these options when sending to own app
+        if (app !== "external") {
+            options.headers = {
                 'Content-Type': 'application/json',
                 'x-api-key': tokens.apiKey,
                 'x-api-iv': tokens.apiKeyIv,

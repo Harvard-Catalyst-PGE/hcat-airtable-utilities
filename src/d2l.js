@@ -24,6 +24,7 @@
  *          - getDataSets()
  *          - getSpecificDataSet()
  *          - downloadDataSet()
+ *          - downloadCachedDataSet()
  *      Misc:
  *          - whoAmI()
  *      OrgUnit:
@@ -148,6 +149,30 @@ class D2LApi {
         return {localOptions: [], rawValues: []};
     }
 
+    async getCourseInfo({orgUnitId = null, attribute = ""} = {}) {
+        let endpoint = `/courses/${orgUnitId}`;
+
+        const response = await this.hcat.fetchWrapper({endpoint});
+        let attributeValue = response?.[attribute];
+
+        if (attribute.includes("Date")) {
+            attributeValue = attributeValue?.split("T")[0];
+        }
+
+        return {rawValues: response, value: attributeValue ?? ""};
+    }
+
+    async updateCourseInfo({orgUnitId = null, payload = null} = {}) {
+        if (!orgUnitId || !payload) {
+            throw new Error("Updating course requires orgId and payload");
+        }
+        
+        let endpoint = `/courses/${orgUnitId}`;
+
+        const response = await this.hcat.fetchWrapper({method: "PUT", endpoint, payload});
+        return response;
+    }
+
     /**
      * Check copy job status.
      * 
@@ -178,6 +203,14 @@ class D2LApi {
          * @return {Object} - JobToken id to use for checking status of job.
          */
     async importCourse(sourceId, targetId, offset = null) {
+        if (!targetId) {
+            throw new Error("A destination course is required to copy.");
+        }
+
+        if (!sourceId) {
+            throw new Error("A source course is required to copy.");
+        }
+        
         let endpoint = `/${targetId}/import`;
 
         // Construct payload with Source Course Id
@@ -227,6 +260,28 @@ class D2LApi {
         return await this.hcat.fetchWrapper({method: 'PUT', endpoint, payload});
     }
 
+    /*--------------------------------------------------------------
+    # CONFIG VARIABLES
+    --------------------------------------------------------------*/
+    async getConfigVar({orgUnitId = null, configVarId = null} = {}) {
+        if (!orgUnitId || !configVarId) {
+            return {};
+        }
+
+        let endpoint = `/${orgUnitId}/configVariable/${configVarId}`;
+        const response = await this.hcat.fetchWrapper({endpoint});
+
+        return response.Value === null || response.Value === "off" ? {value: false} : {value: true};
+    }
+
+    async setConfigVar({orgUnitId = null, configVarId = null, value = null} = {}) {
+        if (!orgUnitId || !configVarId) {
+            throw new Error("setConfigVar requires orgUnitId and configVarId");
+        }
+
+        let endpoint = `/${orgUnitId}/configVariable/${configVarId}`;
+        return await this.hcat.fetchWrapper({method: "PUT", endpoint, payload: {Value: value}});
+    }
     /*--------------------------------------------------------------
     # DATA
     --------------------------------------------------------------*/
@@ -346,6 +401,33 @@ class D2LApi {
         let endpoint = `/datasets/${schemaId}/${pluginId}/${extractId}`;
         return await this.hcat.fetchWrapper({endpoint: endpoint});
     }
+
+    /**
+     * Download a dataset extract from the server's local cache.
+     *
+     * A cache hit skips both the extract lookup and the download from
+     * Brightspace. Returns null when the server has no cached copy, so that
+     * callers can fall back to downloading the dataset.
+     *
+     * @param {String} schemaId
+     * @param {String} name Dataset name, used to name the cache file
+     * @returns {Promise<String|null>} CSV text, or null on a cache miss
+     */
+    async downloadCachedDataSet(schemaId, name = null) {
+        if (!schemaId) {
+            return null;
+        }
+
+        let endpoint = `/datasets/${schemaId}/cached`;
+        return await this.hcat.fetchWrapper({endpoint: endpoint, queryParams: name ? {name} : {}})
+            .catch((e) => {
+                if (e.status === 404) {
+                    return null;
+                }
+
+                throw e;
+            });
+    }
     /*--------------------------------------------------------------
     # MISC
     --------------------------------------------------------------*/
@@ -357,13 +439,36 @@ class D2LApi {
     /*--------------------------------------------------------------
     # ORG UNIT
     --------------------------------------------------------------*/
-    async addReleaseCondition(orgUnitId, type, typeId, conditionType) {
+    /**
+     * 
+     * @param {*} orgUnitId 
+     * @param {*} type 
+     * @param {*} typeId 
+     * @returns The release condition, or null if not found.
+     * @throws Any other error condition besides 404.
+     */
+    async getReleaseCondition(orgUnitId, type, typeId) {
+        let endpoint = `/${orgUnitId}/conditionalRelease/${type}/${typeId}`;
+        const releaseCondition = await this.hcat.fetchWrapper({endpoint}).catch((e) => {
+            if (e.status === 404) {
+                return null;
+            }
+
+            throw e;
+        });
+
+        return releaseCondition?.Expression?.ExpressionParams?.Operands;
+    }
+
+    async addReleaseCondition(orgUnitId, type, typeId, conditionType, payloadParams = {}) {
         let endpoint = `/${orgUnitId}/conditionalRelease/${type}/${typeId}`;
         const payload = {
             "Operator": "All",
             "Type": conditionType,
+            ...payloadParams,
         }
-        return this.hcat.fetchWrapper({method: "PUT", endpoint: endpoint, payload: payload});
+
+        return this.hcat.fetchWrapper({method: "PUT", endpoint, payload});
     }
 
     async getOrgInfo({orgUnitId=6606, target=""} = {}) {

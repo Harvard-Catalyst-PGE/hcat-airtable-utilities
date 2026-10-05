@@ -3,6 +3,7 @@ module.exports = {
     checkFetchStatus: require('./checkFetchStatus').checkFetchStatus,
     checkPermissions: require('./checkPermissions').checkPermissions,
     createFields: require('./createFields').createFields,
+    mergeOrders: require('./mergeOrders').mergeOrders,
     parseResponse: require('./parseResponse').parseResponse,
     setSettingValues: require('./setSettingValues').setSettingValues,
     settleAllPromises: require('./settleAllPromises').settleAllPromises,
