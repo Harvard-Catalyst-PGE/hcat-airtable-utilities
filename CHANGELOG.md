@@ -1,5 +1,10 @@
 # Changelog
 
+# 3.1.1 - 2026-11-18
+
+* No longer wrap `createOrUpdateProduct` response for CM in Airtable format. Pass
+response directly and handle via the caller.
+
 # 3.1.0 - 2026-10-05
 
 __Features:__
