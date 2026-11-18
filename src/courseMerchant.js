@@ -54,7 +54,13 @@ class CourseMerchantApi {
         return await this.hcat.fetchWrapper({endpoint});
     }
     
-    async createOrUpdateProduct(recordId, payload) {
+    /**
+     * Create a product, or update it when the payload has an `id`.
+     *
+     * @param {Object} payload - Product fields
+     * @returns {Promise<Object>} The saved product, as Course Merchant has it
+     */
+    async createOrUpdateProduct(payload) {
         let endpoint = `/products`;
 
         if (payload.id) {
@@ -63,15 +69,7 @@ class CourseMerchantApi {
 
         const method = (payload.id) ? "PUT" : "POST";
 
-        const response = await this.hcat.fetchWrapper({method, endpoint, payload});
-
-        return {
-            id: recordId,
-            fields: {
-                "Id": response.id,
-                "Date Edited": response.dateEdited,
-            }
-        }
+        return await this.hcat.fetchWrapper({method, endpoint, payload});
     }
 }
 
